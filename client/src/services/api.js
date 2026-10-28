@@ -8,8 +8,12 @@ const api = axios.create({
   },
 });
 
-// Request interceptor to handle multipart/form-data with proper boundary
+// Request interceptor to attach token and handle multipart/form-data with proper boundary
 api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   if (config.data instanceof FormData) {
     // Let browser/Axios automatically set multipart/form-data boundary
     delete config.headers['Content-Type'];

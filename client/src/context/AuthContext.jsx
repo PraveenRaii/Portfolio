@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     // Auto logout on unauthorized response event
     const handleUnauthorized = () => {
+      localStorage.removeItem('token');
       if (user) {
         setUser(null);
         toast.error('Session expired. Please log in again.');
@@ -42,6 +43,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     const res = await authService.login(credentials);
     if (res.success && res.user) {
+      if (res.token) {
+        localStorage.setItem('token', res.token);
+      }
       setUser(res.user);
       toast.success(res.message || `Welcome back, ${res.user.name}!`);
       return res.user;
@@ -52,6 +56,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     const res = await authService.register(userData);
     if (res.success && res.user) {
+      if (res.token) {
+        localStorage.setItem('token', res.token);
+      }
       setUser(res.user);
       toast.success(res.message || 'Registration successful!');
       return res.user;
@@ -62,9 +69,11 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await authService.logout();
+      localStorage.removeItem('token');
       setUser(null);
       toast.success('Logged out successfully');
     } catch (error) {
+      localStorage.removeItem('token');
       setUser(null);
     }
   };

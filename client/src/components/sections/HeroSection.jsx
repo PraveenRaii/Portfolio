@@ -11,7 +11,9 @@ import {
   LuCpu,
   LuDatabase,
   LuSparkles,
+  LuArrowUpRight,
 } from 'react-icons/lu';
+import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
 
 const HeroSection = ({ profile }) => {
@@ -75,6 +77,17 @@ const HeroSection = ({ profile }) => {
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-theme-border bg-theme-surface shadow-subtle text-xs font-mono text-theme-text font-medium">
                 <span className="text-emerald-500">📍</span> Lucknow, India
               </span>
+              <a
+                href={profile?.socialLinks?.leetcode || 'https://leetcode.com/u/Praveen_913/'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:border-amber-500 text-xs font-mono text-amber-600 dark:text-amber-400 font-semibold shadow-subtle transition-all"
+                title="Praveen Rai's LeetCode Profile"
+              >
+                <SiLeetcode className="w-3.5 h-3.5 text-amber-500" />
+                <span>LeetCode @Praveen_913</span>
+                <LuArrowUpRight className="w-3 h-3 text-amber-500/80" />
+              </a>
             </div>
 
             {/* Action Buttons */}

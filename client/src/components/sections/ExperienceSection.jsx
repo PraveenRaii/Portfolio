@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LuGraduationCap,
   LuAward,
@@ -8,7 +8,11 @@ import {
   LuCircleCheck,
   LuBuilding2,
   LuBookOpen,
+  LuEye,
+  LuX,
+  LuSparkles,
 } from 'react-icons/lu';
+import { SiLeetcode } from 'react-icons/si';
 
 const fallbackEducation = [
   {
@@ -38,18 +42,40 @@ const fallbackEducation = [
 
 const fallbackCertificates = [
   {
+    title: 'Academic & Technical Excellence Achievement Award',
+    issuer: 'SRMU Lucknow / Sunstone',
+    issueDate: '2024',
+    credentialUrl: 'https://github.com/PraveenRaii',
+    skills: ['Web Development', 'Computer Science', 'Academic Excellence'],
+    imageUrl: '/achievements/achievement_cert.png',
+    type: 'Official Achievement Award',
+  },
+  {
     title: 'Full Stack Web Development & Modern Architecture',
     issuer: 'Sunstone / Industry Certified',
     issueDate: '2024',
     credentialUrl: 'https://github.com/PraveenRaii',
     skills: ['React.js', 'Node.js', 'Express', 'MongoDB', 'REST APIs'],
+    imageUrl: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=80',
+    type: 'Certificate of Excellence',
   },
   {
-    title: 'Java Enterprise & Spring Boot Development',
+    title: 'Java Enterprise & Spring Boot Development Honors',
     issuer: 'Professional Developer Program',
     issueDate: '2024',
     credentialUrl: 'https://github.com/PraveenRaii',
-    skills: ['Java Core', 'Spring Boot', 'MySQL', 'Hibernate / JPA'],
+    skills: ['Java 21', 'Spring Boot 3', 'MySQL', 'Hibernate / JPA'],
+    imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80',
+    type: 'Professional Credential',
+  },
+  {
+    title: 'Hackathon Innovation & System Architecture Finalist',
+    issuer: 'SRMU Tech Summit / Sunstone',
+    issueDate: '2023',
+    credentialUrl: 'https://github.com/PraveenRaii',
+    skills: ['Rapid Prototyping', 'System Design', 'Team Lead'],
+    imageUrl: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80',
+    type: 'Hackathon Award',
   },
   {
     title: 'Relational Database Design & SQL Optimization',
@@ -57,17 +83,14 @@ const fallbackCertificates = [
     issueDate: '2023',
     credentialUrl: 'https://github.com/PraveenRaii',
     skills: ['MySQL', 'Normalization', 'Indexing', 'Transactions'],
-  },
-  {
-    title: 'Version Control & Collaborative Git Workflows',
-    issuer: 'Developer Essentials',
-    issueDate: '2023',
-    credentialUrl: 'https://github.com/PraveenRaii',
-    skills: ['Git', 'GitHub', 'Branching Strategies', 'Code Review'],
+    imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80',
+    type: 'Specialized Track',
   },
 ];
 
 const ExperienceSection = ({ education = [], certificates = [] }) => {
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
   const eduList =
     education && education.length > 0
       ? education.map((e) => ({
@@ -82,12 +105,14 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
 
   const certList =
     certificates && certificates.length > 0
-      ? certificates.map((c) => ({
+      ? certificates.map((c, i) => ({
           title: c.title,
           issuer: c.issuer,
           issueDate: c.issueDate || 'Verified',
           credentialUrl: c.credentialUrl || 'https://github.com/PraveenRaii',
           skills: c.skills || ['Full Stack', 'Software Engineering'],
+          imageUrl: c.image?.url || fallbackCertificates[i % fallbackCertificates.length]?.imageUrl,
+          type: c.type || 'Verified Credential',
         }))
       : fallbackCertificates;
 
@@ -98,21 +123,21 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
         {/* Section Header */}
         <div className="mb-14 space-y-2">
           <div className="text-indigo-600 dark:text-indigo-400 font-mono text-xs tracking-widestTechnical uppercase font-semibold">
-            04 / JOURNEY
+            04 / JOURNEY &amp; ACHIEVEMENTS
           </div>
           <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-theme-text tracking-tight">
-            Milestones, learning &amp; education.
+            Milestones, learning &amp; achievements.
           </h2>
           <p className="text-sm sm:text-base text-theme-textMuted max-w-xl">
-            A solid academic foundation reinforced by practical full-stack projects, disciplined self-study,
-            and continuous technical skill verification.
+            A solid academic foundation reinforced by practical full-stack projects, competitive coding
+            milestones, and verified achievement credentials.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Left Column: Education Timeline */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-6 space-y-8">
             <div className="flex items-center gap-2.5 pb-3 border-b border-theme-border">
               <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
                 <LuGraduationCap className="w-5 h-5" />
@@ -137,12 +162,12 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                   </span>
 
-                  <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-colors shadow-subtle space-y-3">
+                  <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-colors shadow-subtle space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <span className="font-mono text-xs px-2.5 py-0.5 rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold">
                         {edu.period}
                       </span>
-                      <span className="font-mono text-[11px] text-theme-textMuted uppercase">
+                      <span className="font-mono text-[11px] text-theme-textMuted uppercase font-semibold">
                         {edu.status}
                       </span>
                     </div>
@@ -172,20 +197,70 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                 </motion.div>
               ))}
             </div>
+
+            {/* Dedicated LeetCode Problem Solving Spotlight Card */}
+            <div className="p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-theme-surface to-theme-surface shadow-subtle space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                    <SiLeetcode className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-heading font-bold text-sm text-theme-text">
+                      LeetCode &bull; Problem Solving
+                    </h4>
+                    <p className="font-mono text-xs text-amber-600 dark:text-amber-400 font-semibold">
+                      Profile: @Praveen_913
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href="https://leetcode.com/u/Praveen_913/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500 hover:text-white text-amber-600 dark:text-amber-400 text-xs font-mono font-semibold transition-all shadow-subtle"
+                >
+                  <span>Explore LeetCode</span>
+                  <LuExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <p className="text-xs text-theme-textMuted leading-relaxed">
+                Active problem solver practicing Data Structures &amp; Algorithms in Java. Continuous
+                focus on Arrays, Dynamic Programming, Binary Trees, and Algorithmic Time-Space Complexity.
+              </p>
+
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {['Java DSA', 'Binary Trees', 'Graphs', 'Dynamic Programming', 'Two Pointers'].map((topic) => (
+                  <span
+                    key={topic}
+                    className="font-mono text-[10px] px-2 py-0.5 rounded-md border border-amber-500/20 bg-theme-bg text-theme-textMuted"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Right Column: Credentials & Certifications */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="flex items-center gap-2.5 pb-3 border-b border-theme-border">
-              <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-500">
-                <LuAward className="w-5 h-5" />
+          {/* Right Column: Achievements & Verified Photo Credentials */}
+          <div className="lg:col-span-6 space-y-8">
+            <div className="flex items-center justify-between pb-3 border-b border-theme-border">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-500">
+                  <LuAward className="w-5 h-5" />
+                </div>
+                <h3 className="font-heading text-lg font-bold text-theme-text">
+                  Achievements &amp; Certificates
+                </h3>
               </div>
-              <h3 className="font-heading text-lg font-bold text-theme-text">
-                Verified Credentials
-              </h3>
+              <span className="font-mono text-xs text-theme-textMuted">
+                Click photo to preview
+              </span>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {certList.map((cert, idx) => (
                 <motion.div
                   key={idx}
@@ -193,67 +268,150 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.35, delay: idx * 0.08 }}
-                  className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-cyan-500/40 transition-colors shadow-subtle group flex flex-col justify-between"
+                  className="rounded-3xl border border-theme-border bg-theme-surface hover:border-cyan-500/50 transition-all shadow-subtle group flex flex-col justify-between overflow-hidden"
                 >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-cyan-600 dark:text-cyan-400">
-                        {cert.issuer}
+                  {/* Achievement Photo Thumbnail with Click-to-Zoom */}
+                  <div
+                    onClick={() => setSelectedPhoto(cert)}
+                    className="relative h-36 w-full bg-theme-code cursor-pointer overflow-hidden group/img"
+                  >
+                    <img
+                      src={cert.imageUrl}
+                      alt={cert.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end justify-between p-3">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-white px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/20">
+                        {cert.type}
                       </span>
-                      <span className="font-mono text-[11px] text-theme-textMuted">
-                        {cert.issueDate}
+                      <span className="p-1.5 rounded-lg bg-white/20 backdrop-blur-md text-white hover:bg-white hover:text-black transition-colors">
+                        <LuEye className="w-3.5 h-3.5" />
                       </span>
                     </div>
+                  </div>
 
-                    <h4 className="font-heading font-semibold text-sm text-theme-text leading-snug group-hover:text-cyan-500 transition-colors">
-                      {cert.title}
-                    </h4>
+                  <div className="p-4 space-y-2.5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between text-[10px] font-mono text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-wider">
+                        <span>{cert.issuer}</span>
+                        <span className="text-theme-textMuted font-normal">{cert.issueDate}</span>
+                      </div>
 
-                    {cert.skills && (
-                      <div className="flex flex-wrap gap-1.5 pt-2">
-                        {cert.skills.map((skill, sIdx) => (
-                          <span
-                            key={sIdx}
-                            className="font-mono text-[10px] px-2 py-0.5 rounded bg-theme-bg border border-theme-border text-theme-textMuted"
-                          >
-                            {skill}
-                          </span>
-                        ))}
+                      <h4 className="font-heading font-bold text-xs sm:text-sm text-theme-text leading-snug group-hover:text-cyan-500 transition-colors mt-1">
+                        {cert.title}
+                      </h4>
+
+                      {cert.skills && (
+                        <div className="flex flex-wrap gap-1 pt-2">
+                          {cert.skills.slice(0, 3).map((skill, sIdx) => (
+                            <span
+                              key={sIdx}
+                              className="font-mono text-[9.5px] px-2 py-0.5 rounded bg-theme-bg border border-theme-border text-theme-textMuted"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {cert.credentialUrl && (
+                      <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between text-[11px] font-mono">
+                        <span
+                          onClick={() => setSelectedPhoto(cert)}
+                          className="text-theme-textMuted hover:text-theme-text cursor-pointer"
+                        >
+                          View Photo
+                        </span>
+                        <a
+                          href={cert.credentialUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
+                        >
+                          <span>Verify</span>
+                          <LuExternalLink className="w-3 h-3" />
+                        </a>
                       </div>
                     )}
                   </div>
-
-                  {cert.credentialUrl && (
-                    <div className="pt-3 mt-3 border-t border-theme-border/50 flex justify-end">
-                      <a
-                        href={cert.credentialUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
-                      >
-                        <span>Verify Credential</span>
-                        <LuExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  )}
                 </motion.div>
               ))}
             </div>
 
-            {/* Quick highlight block */}
+            {/* Continuous Learning Initiative Block */}
             <div className="p-4 rounded-2xl border border-theme-border bg-indigo-500/5 font-mono text-xs space-y-1.5 text-theme-text">
               <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-[11px]">
                 <LuBookOpen className="w-4 h-4" />
-                <span>CONTINUOUS LEARNING INITIATIVE</span>
+                <span>CONTINUOUS LEARNING &amp; CERTIFICATION</span>
               </div>
               <p className="text-[11px] text-theme-textMuted leading-relaxed">
-                Currently advancing knowledge in Spring Security, microservice communication patterns, and cloud containerization with Docker.
+                Currently advancing specialized expertise in Spring Security, microservice communication patterns, and cloud containerization with Docker.
               </p>
             </div>
           </div>
 
         </div>
       </div>
+
+      {/* Lightbox Photo Preview Modal */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-2xl w-full rounded-3xl overflow-hidden border border-white/20 bg-theme-surface shadow-2xl"
+            >
+              <div className="flex items-center justify-between px-5 py-3 border-b border-theme-border bg-theme-bg">
+                <div>
+                  <h3 className="font-heading font-bold text-sm text-theme-text">
+                    {selectedPhoto.title}
+                  </h3>
+                  <p className="font-mono text-xs text-theme-textMuted">
+                    {selectedPhoto.issuer} &bull; {selectedPhoto.issueDate}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPhoto(null)}
+                  className="p-1.5 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover:text-red-500"
+                >
+                  <LuX className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-4 bg-black flex items-center justify-center max-h-[70vh] overflow-hidden">
+                <img
+                  src={selectedPhoto.imageUrl}
+                  alt={selectedPhoto.title}
+                  className="max-h-[65vh] w-auto object-contain rounded-xl"
+                />
+              </div>
+
+              <div className="p-4 border-t border-theme-border flex items-center justify-between bg-theme-bg">
+                <span className="font-mono text-xs text-theme-textMuted">
+                  Verified Credential Document
+                </span>
+                <a
+                  href={selectedPhoto.credentialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-mono text-xs font-semibold hover:bg-indigo-700"
+                >
+                  <span>Verify Credential Online</span>
+                  <LuExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

@@ -11,6 +11,7 @@ import {
   LuClock,
   LuArrowUpRight,
 } from 'react-icons/lu';
+import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
 import { publicService } from '../../services/publicService';
 import toast from 'react-hot-toast';
@@ -192,6 +193,24 @@ const ContactSection = ({ profile }) => {
                   </div>
                 </div>
                 <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-cyan-500 transition-colors" />
+              </a>
+
+              <a
+                href={profile?.socialLinks?.leetcode || 'https://leetcode.com/u/Praveen_913/'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 flex items-center justify-between text-theme-text hover:bg-theme-bg/60 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center">
+                    <SiLeetcode className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold font-heading">LeetCode Profile</p>
+                    <p className="text-[11px] font-mono text-theme-textMuted">/u/Praveen_913</p>
+                  </div>
+                </div>
+                <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-amber-500 transition-colors" />
               </a>
             </div>
 

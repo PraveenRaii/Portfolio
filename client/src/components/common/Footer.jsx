@@ -1,5 +1,6 @@
 import React from 'react';
 import { LuGithub, LuLinkedin, LuMail, LuArrowUp, LuHeart } from 'react-icons/lu';
+import { SiLeetcode } from 'react-icons/si';
 import { Link } from 'react-router-dom';
 
 const Footer = ({ profile }) => {
@@ -87,6 +88,15 @@ const Footer = ({ profile }) => {
                 className="w-9 h-9 rounded-xl border border-theme-border bg-theme-bg flex items-center justify-center text-theme-text hover:border-indigo-500 hover:text-indigo-500 transition-colors"
               >
                 <LuLinkedin className="w-4 h-4" />
+              </a>
+              <a
+                href={profile?.socialLinks?.leetcode || 'https://leetcode.com/u/Praveen_913/'}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LeetCode Profile"
+                className="w-9 h-9 rounded-xl border border-theme-border bg-theme-bg flex items-center justify-center text-theme-text hover:border-amber-500 hover:text-amber-500 transition-colors"
+              >
+                <SiLeetcode className="w-4 h-4 text-amber-500" />
               </a>
               <a
                 href={`mailto:${email}`}

@@ -91,7 +91,7 @@ const seedDatabase = async () => {
         linkedin: 'https://www.linkedin.com/in/praveen-rai-9r13/',
         github: 'https://github.com/PraveenRaii',
         twitter: 'https://twitter.com/',
-        leetcode: 'https://leetcode.com/',
+        leetcode: 'https://leetcode.com/u/Praveen_913/',
         instagram: 'https://instagram.com/',
       },
     });
@@ -206,6 +206,17 @@ const seedDatabase = async () => {
     // 6. Create Certificates
     console.log('[Seeding]: Creating Certificates...');
     await Certificate.create([
+      {
+        title: 'Academic & Technical Excellence Achievement Award',
+        issuer: 'SRMU Lucknow / Sunstone',
+        issueDate: '2024',
+        credentialUrl: 'https://github.com/PraveenRaii',
+        image: {
+          url: 'http://localhost:5000/uploads/achievement_cert.png',
+          public_id: '',
+        },
+        order: 1,
+      },
       {
         title: 'Full Stack Web Development (MERN Stack)',
         issuer: 'Sunstone Eduversity / Industry Bootcamp',

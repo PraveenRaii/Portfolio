@@ -11,7 +11,6 @@ import {
   LuEye,
   LuX,
   LuSparkles,
-  LuCheckCircle2,
   LuImage,
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
@@ -409,7 +408,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                         </a>
                       ) : (
                         <span className="text-[10px] text-emerald-500 font-semibold flex items-center gap-1">
-                          <LuCheckCircle2 className="w-3 h-3" />
+                          <LuCircleCheck className="w-3 h-3" />
                           <span>Verified</span>
                         </span>
                       )}

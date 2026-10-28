@@ -55,9 +55,13 @@ const UserLayout = () => {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <img
-            src={user?.avatar?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
+            src={user?.avatar?.url || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
             alt={user?.name}
             className="w-8 h-8 rounded-full object-cover border border-indigo-500/40"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+            }}
           />
         </div>
       </div>
@@ -100,9 +104,13 @@ const UserLayout = () => {
           {/* User Profile Snippet */}
           <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border flex items-center gap-3">
             <img
-              src={user?.avatar?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
+              src={user?.avatar?.url || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
               alt={user?.name}
               className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+              }}
             />
             <div className="overflow-hidden">
               <p className="text-xs font-heading font-bold text-theme-text truncate">

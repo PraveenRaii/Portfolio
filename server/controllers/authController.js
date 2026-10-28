@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Profile = require('../models/Profile');
 const sendEmail = require('../utils/sendEmail');
 
 // Helper to generate token and send httpOnly cookie
@@ -120,6 +121,25 @@ const login = async (req, res, next) => {
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).populate('savedProjects');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Keep admin avatar synchronized with Profile avatar
+    if (user.role === 'admin') {
+      const profile = await Profile.findOne();
+      if (profile && profile.avatar?.url) {
+        const isDefault =
+          !user.avatar?.url ||
+          user.avatar.url.includes('photo-1534528741775-53994a69daeb') ||
+          user.avatar.url.includes('default-avatar');
+        if (isDefault || (profile.avatar.url && user.avatar.url !== profile.avatar.url)) {
+          user.avatar = profile.avatar;
+          await User.findByIdAndUpdate(user._id, { avatar: profile.avatar });
+        }
+      }
+    }
+
     res.status(200).json({
       success: true,
       user: {

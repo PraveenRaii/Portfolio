@@ -131,7 +131,7 @@ const UserProfile = () => {
           <div className="flex items-center gap-6">
             <div className="relative group">
               <img
-                src={avatarPreview || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
+                src={avatarPreview || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
                 alt={user?.name}
                 className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/40"
               />

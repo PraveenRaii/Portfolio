@@ -8,20 +8,19 @@ import {
   LuArrowRight,
   LuShield,
   LuUser,
-  LuSparkles,
   LuArrowLeft,
-  LuCheck,
 } from 'react-icons/lu';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/common/Button';
 import ThemeToggle from '../components/common/ThemeToggle';
+import PasswordStrengthIndicator from '../components/common/PasswordStrengthIndicator';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
   const [activeTab, setActiveTab] = useState('admin'); // 'admin' | 'user'
   const [formData, setFormData] = useState({
-    email: 'praveen1234202040@gmail.com',
-    password: 'AdminPraveen@2026',
+    email: '',
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,17 +31,10 @@ const LoginPage = () => {
 
   const handleTabChange = (role) => {
     setActiveTab(role);
-    if (role === 'admin') {
-      setFormData({
-        email: 'praveen1234202040@gmail.com',
-        password: 'AdminPraveen@2026',
-      });
-    } else {
-      setFormData({
-        email: 'rohan.sharma@example.com',
-        password: 'UserDemo@123',
-      });
-    }
+    setFormData({
+      email: '',
+      password: '',
+    });
   };
 
   const handleChange = (e) => {
@@ -92,7 +84,6 @@ const LoginPage = () => {
       </div>
 
       <div className="w-full max-w-md relative z-10 pt-12 pb-6">
-        
         {/* Brand Header */}
         <div className="text-center mb-8 space-y-2">
           <Link
@@ -109,13 +100,12 @@ const LoginPage = () => {
             Single Secure Sign In
           </h2>
           <p className="text-xs font-mono text-theme-textMuted">
-            Authenticate to access either the Admin Dashboard or User Portal
+            Authenticate to access the Admin Dashboard or User Portal
           </p>
         </div>
 
         {/* Card Container */}
         <div className="p-6 sm:p-8 rounded-3xl border border-theme-border bg-theme-surface shadow-card dark:shadow-cardDark space-y-6">
-          
           {/* Role Switcher Tabs */}
           <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-theme-bg border border-theme-border">
             <button
@@ -146,7 +136,7 @@ const LoginPage = () => {
           </div>
 
           {/* Role Guidance Banner */}
-          <div className="p-3.5 rounded-xl border border-theme-border bg-theme-code/50 text-xs font-mono flex items-start justify-between gap-3">
+          <div className="p-3.5 rounded-xl border border-theme-border bg-theme-code/50 text-xs font-mono">
             <div className="space-y-1">
               <span className="text-theme-accent font-bold uppercase tracking-wider text-[10px] block">
                 {activeTab === 'admin' ? '🛡️ Administrator Access' : '👤 Registered User Access'}
@@ -157,16 +147,6 @@ const LoginPage = () => {
                   : 'Save favorite projects, submit public feedback, and message Praveen.'}
               </p>
             </div>
-
-            <button
-              type="button"
-              onClick={() => handleTabChange(activeTab)}
-              className="shrink-0 text-[10px] px-2 py-1 rounded bg-theme-surface border border-theme-border text-theme-accent hover:border-theme-accent font-semibold flex items-center gap-1 transition-colors"
-              title="Auto-fill credentials"
-            >
-              <LuSparkles className="w-3 h-3" />
-              <span>Quick Fill</span>
-            </button>
           </div>
 
           {/* Login Form */}
@@ -183,10 +163,11 @@ const LoginPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoComplete="email"
                   placeholder={
                     activeTab === 'admin'
-                      ? 'praveen1234202040@gmail.com'
-                      : 'rohan.sharma@example.com'
+                      ? 'Enter admin email'
+                      : 'Enter registered email'
                   }
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/50 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors font-mono"
                 />
@@ -214,7 +195,8 @@ const LoginPage = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  placeholder="••••••••••••"
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
                   className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/50 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors font-mono"
                 />
                 <button
@@ -222,6 +204,7 @@ const LoginPage = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-3 text-theme-textMuted hover:text-theme-text focus:outline-none"
                   tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
                     <LuEyeOff className="w-4 h-4" />
@@ -230,6 +213,9 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
+
+              {/* Password Strength Indicator */}
+              <PasswordStrengthIndicator password={formData.password} />
             </div>
 
             <Button
@@ -245,18 +231,6 @@ const LoginPage = () => {
             </Button>
           </form>
 
-          {/* Quick Credential Reference for Convenience */}
-          <div className="pt-4 border-t border-theme-border/60 text-[11px] font-mono text-theme-textMuted space-y-1">
-            <div className="flex items-center justify-between text-theme-text">
-              <span className="font-semibold text-theme-accent">Default Admin:</span>
-              <span>praveen1234202040@gmail.com</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Admin Pass:</span>
-              <span className="text-theme-text">AdminPraveen@2026</span>
-            </div>
-          </div>
-
           {/* Registration link for user role */}
           {activeTab === 'user' && (
             <div className="pt-2 text-center text-xs font-mono text-theme-textMuted">
@@ -269,7 +243,6 @@ const LoginPage = () => {
               </Link>
             </div>
           )}
-
         </div>
       </div>
     </div>

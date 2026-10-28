@@ -7,11 +7,13 @@ import {
   LuBuilding2,
   LuArrowRight,
   LuArrowLeft,
-  LuShieldCheck,
+  LuEye,
+  LuEyeOff,
 } from 'react-icons/lu';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/common/Button';
 import ThemeToggle from '../components/common/ThemeToggle';
+import PasswordStrengthIndicator, { calculatePasswordStrength } from '../components/common/PasswordStrengthIndicator';
 import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
@@ -21,6 +23,7 @@ const RegisterPage = () => {
     password: '',
     collegeOrCompany: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { register } = useAuth();
@@ -39,6 +42,12 @@ const RegisterPage = () => {
 
     if (formData.password.length < 6) {
       toast.error('Password must be at least 6 characters long.');
+      return;
+    }
+
+    const { score } = calculatePasswordStrength(formData.password);
+    if (score <= 1) {
+      toast.error('Password is too weak. Please include letters, numbers, or symbols.');
       return;
     }
 
@@ -72,7 +81,6 @@ const RegisterPage = () => {
       </div>
 
       <div className="w-full max-w-md relative z-10 pt-12 pb-6">
-        
         {/* Brand Header */}
         <div className="text-center mb-8 space-y-2">
           <Link
@@ -96,7 +104,6 @@ const RegisterPage = () => {
         {/* Form Container */}
         <div className="p-6 sm:p-8 rounded-3xl border border-theme-border bg-theme-surface shadow-card dark:shadow-cardDark space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-            
             <div className="space-y-1.5">
               <label className="block font-mono text-xs text-theme-text font-medium">
                 Full Name <span className="text-theme-accent">*</span>
@@ -157,15 +164,32 @@ const RegisterPage = () => {
               <div className="relative">
                 <LuLock className="absolute left-3.5 top-3 text-theme-textMuted w-4 h-4" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  placeholder="Minimum 6 characters"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/50 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors font-mono"
+                  autoComplete="new-password"
+                  placeholder="Create a secure password"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/50 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors font-mono"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-3 text-theme-textMuted hover:text-theme-text focus:outline-none"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <LuEyeOff className="w-4 h-4" />
+                  ) : (
+                    <LuEye className="w-4 h-4" />
+                  )}
+                </button>
               </div>
+
+              {/* Password Strength Indicator */}
+              <PasswordStrengthIndicator password={formData.password} />
             </div>
 
             <Button

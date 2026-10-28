@@ -84,7 +84,36 @@ const defaultSkillCategories = [
 const SkillsSection = ({ skills = [] }) => {
   const [selectedFilter, setSelectedFilter] = useState('all');
 
-  const categories = defaultSkillCategories;
+  const categories = defaultSkillCategories.map((cat) => {
+    if (!skills || skills.length === 0) return cat;
+
+    const extraSkills = skills
+      .filter((s) => {
+        const cLower = (s.category || '').toLowerCase();
+        if (cat.id === 'languages' && cLower.includes('lang')) return true;
+        if (cat.id === 'backend' && cLower.includes('back')) return true;
+        if (cat.id === 'frontend' && cLower.includes('front')) return true;
+        if (
+          cat.id === 'database-tools' &&
+          (cLower.includes('data') || cLower.includes('tool') || cLower.includes('devops'))
+        )
+          return true;
+        return false;
+      })
+      .map((s) => ({
+        name: s.name,
+        role: `${s.category} (${s.proficiency || 80}%)`,
+        tag: s.level || 'Verified',
+      }));
+
+    const existingNames = new Set(cat.skills.map((s) => s.name.toLowerCase()));
+    const uniqueExtras = extraSkills.filter((s) => !existingNames.has(s.name.toLowerCase()));
+
+    return {
+      ...cat,
+      skills: [...cat.skills, ...uniqueExtras],
+    };
+  });
 
   const filteredCategories =
     selectedFilter === 'all'

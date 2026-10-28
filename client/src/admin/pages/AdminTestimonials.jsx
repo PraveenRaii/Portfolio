@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiCheck, FiX, FiTrash2, FiStar, FiClock } from 'react-icons/fi';
+import { FiCheck, FiX, FiTrash2, FiStar, FiClock, FiCheckSquare } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
@@ -60,28 +60,32 @@ const AdminTestimonials = () => {
       : testimonials.filter((t) => t.status === filter);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
-            Testimonials & Endorsements
+          <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+            <FiCheckSquare className="w-3.5 h-3.5" />
+            PEER REVIEWS &amp; RECOMMENDATIONS
+          </div>
+          <h1 className="text-2xl font-heading font-extrabold text-theme-text">
+            Testimonials &amp; Endorsements
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
             Review user-submitted recommendations and approve which feedback appears on your public portfolio.
           </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex gap-1.5 p-1 rounded-xl bg-gray-100 dark:bg-dark-surface border border-gray-200 dark:border-dark-border self-start">
+        <div className="flex gap-1.5 p-1 rounded-2xl bg-theme-surfaceSecondary border border-theme-border self-start">
           {['all', 'pending', 'approved', 'rejected'].map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setFilter(tab)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-colors ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold capitalize transition-all ${
                 filter === tab
-                  ? 'bg-white dark:bg-dark-card text-brand-500 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
+                  ? 'bg-indigo-600 text-white shadow-glowSm'
+                  : 'text-theme-textMuted hover:text-theme-text'
               }`}
             >
               {tab}
@@ -93,7 +97,7 @@ const AdminTestimonials = () => {
       {loading ? (
         <LoadingSkeleton count={3} />
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-xs text-gray-400">
+        <div className="p-16 text-center rounded-3xl border border-dashed border-theme-border bg-theme-surface text-xs font-mono text-theme-textMuted">
           No testimonials found in this category.
         </div>
       ) : (
@@ -101,7 +105,7 @@ const AdminTestimonials = () => {
           {filtered.map((item) => (
             <div
               key={item._id}
-              className="p-6 rounded-3xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm flex flex-col justify-between space-y-4"
+              className="p-6 rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-indigo-500/40 transition-all flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -112,30 +116,30 @@ const AdminTestimonials = () => {
                   </div>
 
                   <span
-                    className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                    className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border ${
                       item.status === 'approved'
-                        ? 'bg-emerald-500/10 text-emerald-500'
+                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
                         : item.status === 'rejected'
-                        ? 'bg-red-500/10 text-red-500'
-                        : 'bg-amber-500/10 text-amber-500'
+                        ? 'bg-rose-500/10 border-rose-500/20 text-rose-500'
+                        : 'bg-amber-500/10 border-amber-500/20 text-amber-500'
                     }`}
                   >
                     {item.status.toUpperCase()}
                   </span>
                 </div>
 
-                <p className="text-xs text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-theme-text leading-relaxed italic">
                   "{item.content}"
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-gray-100 dark:border-dark-border flex items-center justify-between">
+              <div className="pt-4 border-t border-theme-border flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-bold text-gray-900 dark:text-white">
+                  <h4 className="text-xs font-heading font-bold text-theme-text">
                     {item.name}
                   </h4>
-                  <p className="text-[11px] text-gray-400">
-                    {item.roleOrCompany} • {new Date(item.createdAt).toLocaleDateString()}
+                  <p className="text-[11px] font-mono text-theme-textMuted">
+                    {item.roleOrCompany} &bull; {new Date(item.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
@@ -145,7 +149,7 @@ const AdminTestimonials = () => {
                     <button
                       type="button"
                       onClick={() => handleStatusChange(item._id, 'approved')}
-                      className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-colors"
+                      className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-colors"
                       title="Approve for public showcase"
                     >
                       <FiCheck className="w-4 h-4" />
@@ -156,7 +160,7 @@ const AdminTestimonials = () => {
                     <button
                       type="button"
                       onClick={() => handleStatusChange(item._id, 'rejected')}
-                      className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-500 hover:bg-amber-500 hover:text-white transition-colors"
+                      className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 hover:bg-amber-500 hover:text-white transition-colors"
                       title="Reject testimonial"
                     >
                       <FiX className="w-4 h-4" />
@@ -166,7 +170,7 @@ const AdminTestimonials = () => {
                   <button
                     type="button"
                     onClick={() => handleDelete(item._id)}
-                    className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                    className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors"
                     title="Delete permanently"
                   >
                     <FiTrash2 className="w-4 h-4" />

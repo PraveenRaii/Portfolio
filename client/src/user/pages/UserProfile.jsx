@@ -105,21 +105,25 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div>
-        <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+    <div className="space-y-8 max-w-4xl animate-fadeIn">
+      <div className="p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
+        <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+          <FiUser className="w-3.5 h-3.5" />
+          ACCOUNT PREFERENCES
+        </div>
+        <h1 className="text-2xl font-heading font-extrabold text-theme-text">
           Account Settings
         </h1>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
           Manage your personal details, profile picture, security credentials, and account settings.
         </p>
       </div>
 
       {/* Edit Profile Details */}
-      <div className="p-8 rounded-3xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <FiUser className="text-brand-500" />
-          Personal Details & Avatar
+      <div className="p-6 sm:p-8 rounded-3xl border border-theme-border bg-theme-surface shadow-card space-y-6">
+        <h2 className="text-base sm:text-lg font-heading font-bold text-theme-text flex items-center gap-2 pb-4 border-b border-theme-border">
+          <FiUser className="text-indigo-500" />
+          Personal Details &amp; Avatar
         </h2>
 
         <form onSubmit={handleProfileSubmit} className="space-y-6">
@@ -129,11 +133,11 @@ const UserProfile = () => {
               <img
                 src={avatarPreview || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
                 alt={user?.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-brand-500/30"
+                className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/40"
               />
               <label
                 htmlFor="avatar-upload"
-                className="absolute inset-0 bg-black/50 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
+                className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
               >
                 <FiCamera className="w-5 h-5" />
               </label>
@@ -146,13 +150,13 @@ const UserProfile = () => {
               />
             </div>
             <div>
-              <p className="text-xs font-bold text-gray-900 dark:text-white">Profile Photo</p>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                PNG, JPG or WEBP up to 5MB. Hosted securely on Cloudinary.
+              <p className="text-xs font-heading font-bold text-theme-text">Profile Photo</p>
+              <p className="text-[11px] font-mono text-theme-textMuted mt-0.5">
+                PNG, JPG or WEBP. Uploaded securely to Cloudinary asset storage.
               </p>
               <label
                 htmlFor="avatar-upload"
-                className="inline-block mt-2 text-xs font-semibold text-brand-500 hover:underline cursor-pointer"
+                className="inline-block mt-2 text-xs font-mono font-semibold text-indigo-500 hover:underline cursor-pointer"
               >
                 Choose new photo
               </label>
@@ -161,7 +165,7 @@ const UserProfile = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Full Name
               </label>
               <input
@@ -169,25 +173,25 @@ const UserProfile = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Email Address (Read-only)
               </label>
               <input
                 type="email"
                 value={user?.email || ''}
                 disabled
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-100 dark:bg-dark-surface/50 text-gray-500 text-xs cursor-not-allowed"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary/50 text-theme-textMuted text-xs font-mono cursor-not-allowed"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               College or Company
             </label>
             <input
@@ -196,8 +200,8 @@ const UserProfile = () => {
               onChange={(e) =>
                 setFormData({ ...formData, collegeOrCompany: e.target.value })
               }
-              placeholder="e.g. SRMU Lucknow / Tech Corp"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="e.g. SRMU Lucknow / Tech Innovators"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
@@ -214,15 +218,15 @@ const UserProfile = () => {
       </div>
 
       {/* Change Password */}
-      <div className="p-8 rounded-3xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+      <div className="p-6 sm:p-8 rounded-3xl border border-theme-border bg-theme-surface shadow-card space-y-6">
+        <h2 className="text-base sm:text-lg font-heading font-bold text-theme-text flex items-center gap-2 pb-4 border-b border-theme-border">
           <FiLock className="text-cyan-500" />
           Update Security Password
         </h2>
 
         <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-xl">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Current Password
             </label>
             <input
@@ -233,13 +237,13 @@ const UserProfile = () => {
               }
               required
               placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 New Password
               </label>
               <input
@@ -250,12 +254,12 @@ const UserProfile = () => {
                 }
                 required
                 placeholder="Min 6 characters"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Confirm New Password
               </label>
               <input
@@ -269,7 +273,7 @@ const UserProfile = () => {
                 }
                 required
                 placeholder="Repeat new password"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
@@ -286,12 +290,12 @@ const UserProfile = () => {
       </div>
 
       {/* Danger Zone: Delete Account */}
-      <div className="p-6 rounded-3xl border border-red-200 dark:border-red-950/60 bg-red-50/30 dark:bg-red-950/10 flex items-center justify-between">
+      <div className="p-6 rounded-3xl border border-rose-500/30 bg-rose-500/5 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-sm font-bold text-red-600 dark:text-red-400">
+          <h3 className="text-sm font-heading font-bold text-rose-500">
             Delete Account Permanently
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-theme-textMuted mt-0.5">
             Once deleted, all your saved projects, messages and account records will be permanently erased.
           </p>
         </div>
@@ -312,7 +316,7 @@ const UserProfile = () => {
         title="Confirm Account Deletion"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-theme-text leading-relaxed">
             Are you sure you want to permanently delete your account? This action is irreversible.
           </p>
           <div className="flex justify-end gap-3 pt-4">

@@ -36,16 +36,16 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ duration: 0.2 }}
-            className={`relative w-full ${maxWidth} bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-2xl shadow-2xl p-6 z-10 max-h-[90vh] overflow-y-auto`}
+            className={`relative w-full ${maxWidth} bg-theme-surface border border-theme-border rounded-3xl shadow-2xl p-6 z-10 max-h-[90vh] overflow-y-auto`}
           >
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-dark-border mb-5">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+            <div className="flex items-center justify-between pb-4 border-b border-theme-border mb-5">
+              <h3 className="text-xl font-heading font-bold text-theme-text">
                 {title}
               </h3>
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-surface transition-colors"
+                className="p-1.5 rounded-xl text-theme-textMuted hover:text-theme-text hover:bg-theme-surfaceSecondary transition-colors"
                 aria-label="Close modal"
               >
                 <FiX className="w-5 h-5" />

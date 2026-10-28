@@ -33,7 +33,7 @@ export default {
           DEFAULT: '#6366F1',
         },
         // Midnight Obsidian dark surfaces
-        dark: {
+        obsidian: {
           bg: '#090B10',
           card: '#10141E',
           surface: '#171B27',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiExternalLink, FiGithub, FiCheck } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiExternalLink, FiGithub, FiCheck, FiFolder, FiStar } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
@@ -138,14 +138,18 @@ const AdminProjects = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+            <FiFolder className="w-3.5 h-3.5" />
+            SHOWCASE REPOSITORY
+          </div>
+          <h1 className="text-2xl font-heading font-extrabold text-theme-text">
             Projects Manager
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Add, update, or remove portfolio showcase projects with Cloudinary image hosting.
+          <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
+            Manage showcase entries, tech stack badges, live deployments, and repository links.
           </p>
         </div>
         <Button variant="primary" size="md" icon={FiPlus} onClick={openAddModal}>
@@ -156,7 +160,7 @@ const AdminProjects = () => {
       {loading ? (
         <LoadingSkeleton type="project" count={3} />
       ) : projects.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-xs text-gray-400">
+        <div className="p-16 text-center rounded-3xl border border-dashed border-theme-border bg-theme-surface text-xs font-mono text-theme-textMuted">
           No projects found. Click "Add Project" above to create your first portfolio project!
         </div>
       ) : (
@@ -164,33 +168,35 @@ const AdminProjects = () => {
           {projects.map((proj) => (
             <div
               key={proj._id}
-              className="rounded-3xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card overflow-hidden shadow-sm flex flex-col justify-between"
+              className="rounded-3xl border border-theme-border bg-theme-surface overflow-hidden shadow-card hover:border-indigo-500/40 transition-all flex flex-col justify-between group"
             >
               <div>
-                <img
-                  src={proj.image?.url}
-                  alt={proj.title}
-                  className="w-full h-44 object-cover"
-                />
-                <div className="p-5 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-base text-gray-900 dark:text-white">
-                      {proj.title}
-                    </h3>
-                    {proj.isFeatured && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500 text-white">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                <div className="relative h-44 w-full bg-theme-surfaceSecondary overflow-hidden">
+                  <img
+                    src={proj.image?.url}
+                    alt={proj.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {proj.isFeatured && (
+                    <span className="absolute top-3 right-3 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-black shadow-md flex items-center gap-1">
+                      <FiStar className="w-3 h-3 fill-current" />
+                      Featured
+                    </span>
+                  )}
+                </div>
+
+                <div className="p-5 space-y-2.5">
+                  <h3 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
+                    {proj.title}
+                  </h3>
+                  <p className="text-xs text-theme-textMuted line-clamp-2 leading-relaxed">
                     {proj.description}
                   </p>
-                  <div className="flex flex-wrap gap-1 pt-2">
+                  <div className="flex flex-wrap gap-1 pt-1">
                     {proj.tags?.map((t, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-gray-400 font-medium"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-theme-surfaceSecondary text-theme-textMuted border border-theme-border"
                       >
                         {t}
                       </span>
@@ -199,27 +205,49 @@ const AdminProjects = () => {
                 </div>
               </div>
 
-              <div className="p-5 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-dark-border mt-3">
-                <span className="text-[11px] text-gray-400 font-mono">
+              <div className="p-5 pt-0 flex items-center justify-between border-t border-theme-border mt-3 pt-3">
+                <span className="text-[11px] text-theme-textMuted font-mono">
                   Order: #{proj.order}
                 </span>
 
-                <div className="flex items-center gap-2 pt-3">
+                <div className="flex items-center gap-2">
+                  {proj.liveUrl && (
+                    <a
+                      href={proj.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
+                      title="Open Live App"
+                    >
+                      <FiExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                  {proj.githubUrl && (
+                    <a
+                      href={proj.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-theme-text border border-theme-border transition-colors"
+                      title="GitHub Repository"
+                    >
+                      <FiGithub className="w-3.5 h-3.5" />
+                    </a>
+                  )}
                   <button
                     type="button"
                     onClick={() => openEditModal(proj)}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-dark-surface text-gray-700 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                    className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-text hover:text-indigo-500 border border-theme-border transition-colors"
                     title="Edit"
                   >
-                    <FiEdit2 className="w-4 h-4" />
+                    <FiEdit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDelete(proj._id)}
-                    className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                    className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
                     title="Delete"
                   >
-                    <FiTrash2 className="w-4 h-4" />
+                    <FiTrash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -238,7 +266,7 @@ const AdminProjects = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Project Title *
               </label>
               <input
@@ -246,52 +274,52 @@ const AdminProjects = () => {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Tech Stack Tags (Comma separated)
               </label>
               <input
                 type="text"
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                placeholder="React, Node.js, Express, MongoDB"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder="React, Spring Boot, MySQL, REST APIs"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
-              Short Description *
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Concise Overview *
             </label>
             <textarea
               rows={2}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none font-sans"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
-              Extended Architecture Description
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Extended Architecture &amp; Problem Solved
             </label>
             <textarea
               rows={3}
               value={formData.longDescription}
               onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none font-sans"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Live URL
               </label>
               <input
@@ -299,12 +327,12 @@ const AdminProjects = () => {
                 value={formData.liveUrl}
                 onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
                 placeholder="https://..."
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 GitHub Repository URL
               </label>
               <input
@@ -312,33 +340,33 @@ const AdminProjects = () => {
                 value={formData.githubUrl}
                 onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
                 placeholder="https://github.com/..."
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Display Order
               </label>
               <input
                 type="number"
                 value={formData.order}
                 onChange={(e) => setFormData({ ...formData, order: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
 
             <div className="pt-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.isFeatured}
                   onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                  className="rounded text-brand-500 focus:ring-brand-500"
+                  className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
                 />
-                <span className="text-xs font-bold text-gray-800 dark:text-gray-200">
+                <span className="text-xs font-heading font-bold text-theme-text">
                   Feature on Public Portfolio
                 </span>
               </label>
@@ -347,25 +375,25 @@ const AdminProjects = () => {
 
           {/* Project Image */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
-              Project Preview Cover (Cloudinary)
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Project Preview Cover (Cloudinary / Local)
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="text-xs text-gray-500"
+              className="text-xs text-theme-textMuted font-mono"
             />
             {imagePreview && (
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="mt-2 h-32 w-auto rounded-xl object-cover border border-gray-200 dark:border-dark-border"
+                className="mt-3 h-32 w-auto rounded-2xl object-cover border border-theme-border"
               />
             )}
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <Button variant="secondary" size="md" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

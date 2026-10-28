@@ -35,8 +35,8 @@ const UserDashboard = () => {
       title: 'Saved Projects',
       value: data?.stats?.savedProjectsCount || 0,
       icon: FiBookmark,
-      color: 'text-brand-500',
-      bg: 'bg-brand-500/10',
+      color: 'text-indigo-500',
+      bg: 'bg-indigo-500/15 text-indigo-500 border-indigo-500/30',
       link: '/user/saved-projects',
     },
     {
@@ -44,7 +44,7 @@ const UserDashboard = () => {
       value: data?.stats?.messagesCount || 0,
       icon: FiMail,
       color: 'text-cyan-500',
-      bg: 'bg-cyan-500/10',
+      bg: 'bg-cyan-500/15 text-cyan-500 border-cyan-500/30',
       link: '/user/messages',
     },
     {
@@ -52,23 +52,24 @@ const UserDashboard = () => {
       value: data?.stats?.testimonialsCount || 0,
       icon: FiMessageSquare,
       color: 'text-amber-500',
-      bg: 'bg-amber-500/10',
+      bg: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
       link: '/user/testimonials',
     },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fadeIn">
       {/* Welcome Banner */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-cyan-500 text-white shadow-glow relative overflow-hidden">
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-indigo-900/30 via-theme-surface to-cyan-900/30 border border-theme-border shadow-card relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-2">
-          <span className="text-xs uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-500/15 text-indigo-500 border border-indigo-500/30">
             User Workspace
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-heading font-extrabold text-theme-text tracking-tight">
             {data?.welcomeMessage || 'Welcome back to your dashboard!'}
           </h1>
-          <p className="text-brand-100 text-sm max-w-xl">
+          <p className="text-xs sm:text-sm text-theme-textMuted max-w-xl">
             Track your bookmarked portfolio projects, manage endorsements, and stay connected with Praveen Rai.
           </p>
         </div>
@@ -82,17 +83,17 @@ const UserDashboard = () => {
             <Link
               key={idx}
               to={s.link}
-              className="p-6 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card hover:border-brand-500/50 transition-all hover:shadow-md flex items-center justify-between group"
+              className="p-6 rounded-3xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-all shadow-card hover:shadow-glowSm flex items-center justify-between group"
             >
               <div>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <p className="text-xs font-mono font-bold text-theme-textMuted uppercase tracking-wider">
                   {s.title}
                 </p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
+                <p className="text-3xl font-heading font-extrabold text-theme-text mt-1">
                   {s.value}
                 </p>
               </div>
-              <div className={`w-12 h-12 rounded-2xl ${s.bg} ${s.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+              <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center group-hover:scale-110 transition-transform ${s.bg}`}>
                 <Icon className="w-6 h-6" />
               </div>
             </Link>
@@ -100,65 +101,23 @@ const UserDashboard = () => {
         })}
       </div>
 
-      {/* Saved Projects Preview */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Saved Projects Preview
-          </h2>
-          <Link
-            to="/user/saved-projects"
-            className="text-xs font-semibold text-brand-500 hover:underline flex items-center gap-1"
-          >
-            View All <FiArrowRight className="w-3.5 h-3.5" />
-          </Link>
+      {/* Quick Showcase Link */}
+      <div className="p-6 rounded-3xl border border-theme-border bg-theme-surface shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-heading font-bold text-base text-theme-text">
+            Explore Portfolio Projects
+          </h3>
+          <p className="text-xs text-theme-textMuted mt-0.5">
+            Discover full-stack web applications built with React, Spring Boot, and Node.js.
+          </p>
         </div>
-
-        {data?.savedProjectsPreview?.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              You haven't bookmarked any projects yet.
-            </p>
-            <Link
-              to="/#projects"
-              className="mt-3 inline-block text-xs font-semibold text-brand-500 hover:underline"
-            >
-              Explore Portfolio Projects &rarr;
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {data?.savedProjectsPreview?.map((proj) => (
-              <div
-                key={proj._id}
-                className="rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card p-4 space-y-3 shadow-sm hover:border-brand-500/40 transition-colors"
-              >
-                <img
-                  src={proj.image?.url}
-                  alt={proj.title}
-                  className="w-full h-36 object-cover rounded-xl"
-                />
-                <h3 className="font-bold text-sm text-gray-900 dark:text-white truncate">
-                  {proj.title}
-                </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                  {proj.description}
-                </p>
-                {proj.liveUrl && (
-                  <a
-                    href={proj.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-brand-500 hover:underline pt-1"
-                  >
-                    <FiExternalLink className="w-3.5 h-3.5" />
-                    Visit Live App
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-xs font-bold transition-all shadow-glowSm"
+        >
+          <span>View Public Projects</span>
+          <FiArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </div>
   );

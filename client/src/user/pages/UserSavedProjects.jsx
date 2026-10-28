@@ -44,30 +44,34 @@ const UserSavedProjects = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
+        <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+          <FiBookmark className="w-3.5 h-3.5" />
+          SAVED PORTFOLIO WORK
+        </div>
+        <h1 className="text-2xl font-heading font-extrabold text-theme-text">
           Saved Projects
         </h1>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
           Quickly access your bookmarked portfolio projects and technical architecture details.
         </p>
       </div>
 
       {projects.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-brand-500/10 text-brand-500 flex items-center justify-center mx-auto">
+        <div className="p-16 text-center rounded-3xl border border-dashed border-theme-border bg-theme-surface space-y-4 shadow-card">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 flex items-center justify-center mx-auto">
             <FiBookmark className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-gray-900 dark:text-white">
+          <h3 className="text-base font-heading font-bold text-theme-text">
             No saved projects yet
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+          <p className="text-xs text-theme-textMuted max-w-sm mx-auto leading-relaxed">
             Click the bookmark icon on any project card in the public portfolio to keep it handy here.
           </p>
           <Link
             to="/#projects"
-            className="inline-block px-5 py-2.5 rounded-xl bg-brand-500 text-white text-xs font-semibold shadow-glow"
+            className="inline-block px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-xs font-bold shadow-glowSm transition-all"
           >
             Browse Projects
           </Link>
@@ -77,26 +81,28 @@ const UserSavedProjects = () => {
           {projects.map((proj) => (
             <div
               key={proj._id}
-              className="rounded-3xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card overflow-hidden shadow-sm flex flex-col justify-between"
+              className="rounded-3xl border border-theme-border bg-theme-surface overflow-hidden shadow-card hover:border-indigo-500/40 transition-all flex flex-col justify-between group"
             >
               <div>
-                <img
-                  src={proj.image?.url}
-                  alt={proj.title}
-                  className="w-full h-44 object-cover"
-                />
+                <div className="h-44 w-full bg-theme-surfaceSecondary overflow-hidden">
+                  <img
+                    src={proj.image?.url}
+                    alt={proj.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
                 <div className="p-5 space-y-2">
-                  <h3 className="font-bold text-base text-gray-900 dark:text-white">
+                  <h3 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
                     {proj.title}
                   </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-3">
+                  <p className="text-xs text-theme-textMuted line-clamp-3 leading-relaxed">
                     {proj.description}
                   </p>
                   <div className="flex flex-wrap gap-1 pt-2">
                     {proj.tags?.map((t, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-gray-400"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-theme-surfaceSecondary border border-theme-border text-theme-textMuted"
                       >
                         {t}
                       </span>
@@ -105,17 +111,17 @@ const UserSavedProjects = () => {
                 </div>
               </div>
 
-              <div className="p-5 pt-0 flex items-center justify-between border-t border-gray-100 dark:border-dark-border mt-3">
-                <div className="flex items-center gap-3 pt-3">
+              <div className="p-5 pt-0 flex items-center justify-between border-t border-theme-border mt-3 pt-3">
+                <div className="flex items-center gap-3">
                   {proj.liveUrl && (
                     <a
                       href={proj.liveUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-brand-500 hover:underline flex items-center gap-1"
+                      className="text-xs font-mono font-bold text-indigo-500 hover:underline flex items-center gap-1"
                     >
                       <FiExternalLink className="w-3.5 h-3.5" />
-                      Live
+                      Live App
                     </a>
                   )}
                   {proj.githubUrl && (
@@ -123,7 +129,7 @@ const UserSavedProjects = () => {
                       href={proj.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-white flex items-center gap-1"
+                      className="text-xs font-mono font-bold text-theme-textMuted hover:text-theme-text flex items-center gap-1"
                     >
                       <FiGithub className="w-3.5 h-3.5" />
                       Code
@@ -134,11 +140,10 @@ const UserSavedProjects = () => {
                 <button
                   type="button"
                   onClick={() => handleRemove(proj._id)}
-                  className="pt-3 text-red-500 hover:text-red-700 text-xs font-medium flex items-center gap-1"
+                  className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white text-xs font-mono transition-colors"
                   title="Remove from saved"
                 >
                   <FiTrash2 className="w-3.5 h-3.5" />
-                  Remove
                 </button>
               </div>
             </div>

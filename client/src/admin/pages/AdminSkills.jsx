@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiCpu } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
@@ -108,14 +108,18 @@ const AdminSkills = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
-            Skills & Technologies
+          <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+            <FiCpu className="w-3.5 h-3.5" />
+            TECHNICAL CAPABILITIES
+          </div>
+          <h1 className="text-2xl font-heading font-extrabold text-theme-text">
+            Skills &amp; Technologies
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Manage your technical skill inventory, proficiency bars, and categories displayed on the public portfolio.
+          <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
+            Manage your technical skill inventory, proficiency markers, and toolkit categories.
           </p>
         </div>
         <Button variant="primary" size="md" icon={FiPlus} onClick={openAddModal}>
@@ -126,7 +130,7 @@ const AdminSkills = () => {
       {loading ? (
         <LoadingSkeleton count={3} />
       ) : skills.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-xs text-gray-400">
+        <div className="p-16 text-center rounded-3xl border border-dashed border-theme-border bg-theme-surface text-xs font-mono text-theme-textMuted">
           No skills found. Click "Add Skill" above to list your capabilities.
         </div>
       ) : (
@@ -134,19 +138,19 @@ const AdminSkills = () => {
           {skills.map((skill) => (
             <div
               key={skill._id}
-              className="p-5 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm flex items-center justify-between"
+              className="p-5 rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-indigo-500/40 transition-all flex items-center justify-between group"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-sm text-gray-900 dark:text-white">
+                  <h3 className="font-heading font-bold text-sm text-theme-text group-hover:text-indigo-500 transition-colors">
                     {skill.name}
                   </h3>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-500">
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
                     {skill.level}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">
-                  {skill.category} • {skill.proficiency}%
+                <p className="text-xs font-mono text-theme-textMuted">
+                  {skill.category} &bull; {skill.proficiency}%
                 </p>
               </div>
 
@@ -154,14 +158,16 @@ const AdminSkills = () => {
                 <button
                   type="button"
                   onClick={() => openEditModal(skill)}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-gray-300 hover:text-brand-500 transition-colors"
+                  className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
+                  title="Edit"
                 >
                   <FiEdit2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleDelete(skill._id)}
-                  className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-colors"
+                  className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
+                  title="Delete"
                 >
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
@@ -179,7 +185,7 @@ const AdminSkills = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Skill Name *
             </label>
             <input
@@ -187,20 +193,20 @@ const AdminSkills = () => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              placeholder="e.g. React.js, Node.js, Docker"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="e.g. React.js, Spring Boot, MySQL"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Category
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
@@ -211,13 +217,13 @@ const AdminSkills = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Proficiency Level
               </label>
               <select
                 value={formData.level}
                 onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               >
                 {levels.map((l) => (
                   <option key={l} value={l}>
@@ -229,9 +235,9 @@ const AdminSkills = () => {
           </div>
 
           <div>
-            <div className="flex justify-between text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              <span>Proficiency Percentage</span>
-              <span className="font-mono text-brand-500">{formData.proficiency}%</span>
+            <div className="flex justify-between text-xs font-mono font-semibold text-theme-text mb-1.5">
+              <span>Proficiency Depth</span>
+              <span className="text-indigo-500">{formData.proficiency}%</span>
             </div>
             <input
               type="range"
@@ -239,11 +245,11 @@ const AdminSkills = () => {
               max="100"
               value={formData.proficiency}
               onChange={(e) => setFormData({ ...formData, proficiency: Number(e.target.value) })}
-              className="w-full accent-brand-500"
+              className="w-full accent-indigo-600"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <Button variant="secondary" size="md" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>

@@ -94,14 +94,18 @@ const AdminMessages = () => {
     filter === 'unread' ? messages.filter((m) => !m.isRead) : messages;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
-            Messages & Inquiries Inbox
+          <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+            <FiMail className="w-3.5 h-3.5" />
+            COMMUNICATION INBOX
+          </div>
+          <h1 className="text-2xl font-heading font-extrabold text-theme-text">
+            Messages &amp; Inquiries Inbox
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Read portfolio inquiries, dispatch email replies via Nodemailer, and review full discussion threads.
+          <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
+            Read contact inquiries, dispatch direct email replies, and review conversation logs.
           </p>
         </div>
 
@@ -110,10 +114,10 @@ const AdminMessages = () => {
           <button
             type="button"
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-2xl text-xs font-mono font-bold transition-all ${
               filter === 'all'
-                ? 'bg-brand-500 text-white shadow-glowSm'
-                : 'bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-glowSm'
+                : 'bg-theme-surfaceSecondary border border-theme-border text-theme-textMuted hover:text-theme-text'
             }`}
           >
             All Messages ({messages.length})
@@ -121,10 +125,10 @@ const AdminMessages = () => {
           <button
             type="button"
             onClick={() => setFilter('unread')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-2xl text-xs font-mono font-bold transition-all ${
               filter === 'unread'
-                ? 'bg-brand-500 text-white shadow-glowSm'
-                : 'bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-glowSm'
+                : 'bg-theme-surfaceSecondary border border-theme-border text-theme-textMuted hover:text-theme-text'
             }`}
           >
             Unread ({messages.filter((m) => !m.isRead).length})
@@ -135,7 +139,7 @@ const AdminMessages = () => {
       {loading ? (
         <LoadingSkeleton count={3} />
       ) : filtered.length === 0 ? (
-        <div className="p-12 text-center rounded-3xl border border-dashed border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card text-xs text-gray-400">
+        <div className="p-16 text-center rounded-3xl border border-dashed border-theme-border bg-theme-surface text-xs font-mono text-theme-textMuted">
           No inquiries found.
         </div>
       ) : (
@@ -145,92 +149,100 @@ const AdminMessages = () => {
               key={msg._id}
               className={`p-6 rounded-3xl border transition-all ${
                 !msg.isRead
-                  ? 'border-brand-500/60 bg-brand-50/20 dark:bg-brand-950/20 shadow-md'
-                  : 'border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm'
+                  ? 'border-indigo-500/50 bg-indigo-500/5 shadow-card hover:border-indigo-500'
+                  : 'border-theme-border bg-theme-surface shadow-card hover:border-theme-border/80'
               }`}
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-gray-100 dark:border-dark-border mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-theme-border mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-gray-900 dark:text-white">
+                  <span className="font-heading font-bold text-sm text-theme-text">
                     {msg.name}
                   </span>
                   <a
                     href={`mailto:${msg.email}`}
-                    className="text-xs text-brand-500 hover:underline"
+                    className="text-xs font-mono text-indigo-500 hover:underline"
                   >
                     &lt;{msg.email}&gt;
                   </a>
                   {!msg.isRead && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500 text-white">
-                      Unread
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-500 border border-indigo-500/30">
+                      UNREAD
                     </span>
                   )}
                 </div>
-                <span className="text-[11px] text-gray-400 font-mono">
-                  {new Date(msg.createdAt).toLocaleString()}
+                <span className="text-[11px] text-theme-textMuted font-mono">
+                  {new Date(msg.createdAt).toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </span>
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                  Subject: {msg.subject}
+                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-theme-textMuted">
+                  Subject: <span className="text-theme-text font-sans normal-case font-semibold">{msg.subject}</span>
                 </h4>
-                <p className="text-xs text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap p-3.5 rounded-xl bg-gray-50 dark:bg-dark-surface">
+                <p className="text-xs sm:text-sm text-theme-text leading-relaxed whitespace-pre-wrap p-4 rounded-2xl bg-theme-surfaceSecondary border border-theme-border font-sans">
                   {msg.message}
                 </p>
               </div>
 
               {/* Replies History */}
               {msg.replies && msg.replies.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-gray-100 dark:border-dark-border space-y-2">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-brand-500">
+                <div className="mt-4 pt-3 border-t border-theme-border space-y-2">
+                  <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-indigo-500">
                     Dispatched Replies ({msg.replies.length})
                   </p>
                   {msg.replies.map((r, rIdx) => (
                     <div
                       key={rIdx}
-                      className="p-3 rounded-xl bg-brand-500/5 border border-brand-500/20 text-xs space-y-1"
+                      className="p-3.5 rounded-2xl bg-indigo-500/5 border border-indigo-500/20 text-xs space-y-1"
                     >
-                      <div className="flex items-center justify-between text-[11px] text-brand-500 font-semibold">
+                      <div className="flex items-center justify-between text-[11px] text-indigo-500 font-semibold font-mono">
                         <span>Replied by: {r.repliedBy || 'Praveen Rai'}</span>
-                        <span className="font-mono text-gray-400">
+                        <span className="text-theme-textMuted">
                           {new Date(r.repliedAt).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                        {r.replyText}
+                      <p className="text-theme-text whitespace-pre-wrap font-sans">
+                        {r.message}
                       </p>
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Action Bar */}
-              <div className="flex items-center justify-end gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-dark-border">
-                {!msg.isRead && (
+              {/* Action Buttons */}
+              <div className="mt-4 pt-3 border-t border-theme-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     size="sm"
-                    icon={FiCheck}
-                    onClick={() => handleMarkRead(msg._id)}
+                    icon={FiCornerDownRight}
+                    onClick={() => openReplyModal(msg)}
                   >
-                    Mark Read
+                    Reply via Email
                   </Button>
-                )}
 
-                <Button
-                  variant="primary"
-                  size="sm"
-                  icon={FiCornerDownRight}
-                  onClick={() => openReplyModal(msg)}
-                >
-                  Reply by Email
-                </Button>
+                  {!msg.isRead && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      icon={FiCheck}
+                      onClick={() => handleMarkRead(msg._id)}
+                    >
+                      Mark Read
+                    </Button>
+                  )}
+                </div>
 
                 <button
                   type="button"
                   onClick={() => handleDelete(msg._id)}
-                  className="p-2 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                  className="p-2 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors"
                   title="Delete message"
                 >
                   <FiTrash2 className="w-4 h-4" />
@@ -245,33 +257,33 @@ const AdminMessages = () => {
       <Modal
         isOpen={isReplyOpen}
         onClose={() => setIsReplyOpen(false)}
-        title={`Reply to ${selectedMessage?.name || 'Inquiry'}`}
+        title={`Reply to ${selectedMessage?.name || 'Contact'}`}
       >
         <form onSubmit={handleSendReply} className="space-y-4">
-          <div className="p-3 rounded-xl bg-gray-50 dark:bg-dark-surface text-xs space-y-1">
-            <p className="font-semibold text-gray-900 dark:text-white">
-              To: {selectedMessage?.email}
+          <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border text-xs space-y-1">
+            <p className="text-theme-text font-bold">
+              Original Message ({selectedMessage?.subject}):
             </p>
-            <p className="text-gray-500 dark:text-gray-400">
-              Subject: Re: {selectedMessage?.subject}
+            <p className="text-theme-textMuted italic line-clamp-3">
+              "{selectedMessage?.message}"
             </p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Email Response Body *
             </label>
             <textarea
-              rows={6}
+              rows={5}
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               required
               placeholder="Hi there, thank you for reaching out..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none"
+              className="w-full px-4 py-3 rounded-2xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans resize-none"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <Button variant="secondary" size="md" onClick={() => setIsReplyOpen(false)}>
               Cancel
             </Button>
@@ -282,7 +294,7 @@ const AdminMessages = () => {
               icon={FiSend}
               isLoading={sendingReply}
             >
-              Send & Dispatch Email
+              Send Email Response
             </Button>
           </div>
         </form>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiBookOpen, FiAward } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiBookOpen, FiAward, FiExternalLink } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import { publicService } from '../../services/publicService';
 import Button from '../../components/common/Button';
@@ -114,7 +114,7 @@ const AdminEducationCertificates = () => {
     try {
       const res = await adminService.deleteEducation(id);
       if (res.success) {
-        toast.success('Education record deleted');
+        toast.success('Education record removed');
         setEducationList((prev) => prev.filter((e) => e._id !== id));
       }
     } catch (err) {
@@ -192,18 +192,22 @@ const AdminEducationCertificates = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 animate-fadeIn">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
-          <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white">
-            Academics & Certifications
+          <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
+            <FiAward className="w-3.5 h-3.5" />
+            ACADEMICS &amp; HONORS
+          </div>
+          <h1 className="text-2xl font-heading font-extrabold text-theme-text">
+            Academics &amp; Certifications
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Maintain your university degrees, bootcamps, and professional credential badges.
+          <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
+            Maintain your university degrees, bootcamps, and verified achievement credentials.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div>
           {activeTab === 'education' ? (
             <Button variant="primary" size="md" icon={FiPlus} onClick={openAddEdu}>
               Add Education
@@ -217,31 +221,31 @@ const AdminEducationCertificates = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 dark:border-dark-border pb-2">
+      <div className="flex gap-2 border-b border-theme-border pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('education')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold transition-all ${
             activeTab === 'education'
-              ? 'bg-brand-500 text-white shadow-glowSm'
-              : 'text-gray-600 dark:text-gray-400 hover:text-brand-500'
+              ? 'bg-indigo-600 text-white shadow-glowSm'
+              : 'text-theme-textMuted hover:text-theme-text hover:bg-theme-surfaceSecondary'
           }`}
         >
           <FiBookOpen className="w-4 h-4" />
-          Education ({educationList.length})
+          <span>Education ({educationList.length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab('certificates')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold transition-all ${
             activeTab === 'certificates'
-              ? 'bg-brand-500 text-white shadow-glowSm'
-              : 'text-gray-600 dark:text-gray-400 hover:text-brand-500'
+              ? 'bg-indigo-600 text-white shadow-glowSm'
+              : 'text-theme-textMuted hover:text-theme-text hover:bg-theme-surfaceSecondary'
           }`}
         >
           <FiAward className="w-4 h-4" />
-          Certificates ({certList.length})
+          <span>Certificates &amp; Awards ({certList.length})</span>
         </button>
       </div>
 
@@ -253,32 +257,46 @@ const AdminEducationCertificates = () => {
           {educationList.map((edu) => (
             <div
               key={edu._id}
-              className="p-5 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm flex items-center justify-between"
+              className="p-6 rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-indigo-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
             >
-              <div className="space-y-1">
-                <h3 className="font-bold text-sm text-gray-900 dark:text-white">
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-500 font-bold border border-indigo-500/20">
+                    {edu.startDate} – {edu.endDate || 'Present'}
+                  </span>
+                  {edu.grade && (
+                    <span className="font-mono text-xs text-theme-textMuted">
+                      {edu.grade}
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
                   {edu.degree}
                 </h3>
-                <p className="text-xs font-semibold text-brand-500">
+                <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400">
                   {edu.institution}
                 </p>
-                <p className="text-[11px] text-gray-400">
-                  {edu.startDate} - {edu.endDate || 'Present'} {edu.grade && `• ${edu.grade}`}
-                </p>
+                {edu.description && (
+                  <p className="text-xs text-theme-textMuted leading-relaxed pt-1">
+                    {edu.description}
+                  </p>
+                )}
               </div>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => openEditEdu(edu)}
-                  className="p-2 rounded-lg bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-gray-300 hover:text-brand-500"
+                  className="p-2.5 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
+                  title="Edit"
                 >
                   <FiEdit2 className="w-3.5 h-3.5" />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleEduDelete(edu._id)}
-                  className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white"
+                  className="p-2.5 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
+                  title="Delete"
                 >
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
@@ -288,38 +306,59 @@ const AdminEducationCertificates = () => {
         </div>
       ) : (
         /* Certificates List */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {certList.map((cert) => (
             <div
               key={cert._id}
-              className="p-5 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm flex flex-col justify-between"
+              className="p-5 rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-cyan-500/40 transition-all flex flex-col justify-between group overflow-hidden"
             >
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-bold uppercase text-brand-500">
-                  {cert.issuer}
-                </span>
-                <h3 className="font-bold text-sm text-gray-900 dark:text-white">
-                  {cert.title}
-                </h3>
-                <p className="text-xs text-gray-400">Year: {cert.issueDate}</p>
+              <div className="space-y-3">
+                {cert.image?.url && (
+                  <div className="h-32 w-full rounded-2xl overflow-hidden bg-theme-surfaceSecondary border border-theme-border">
+                    <img
+                      src={cert.image.url}
+                      alt={cert.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )}
+                <div>
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                    <span>{cert.issuer}</span>
+                    <span className="text-theme-textMuted">{cert.issueDate}</span>
+                  </div>
+                  <h3 className="font-heading font-bold text-sm text-theme-text group-hover:text-cyan-500 transition-colors mt-1">
+                    {cert.title}
+                  </h3>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between pt-4 mt-4 border-t border-gray-100 dark:border-dark-border">
-                <span className="text-[11px] text-gray-400 truncate max-w-[150px]">
-                  {cert.credentialUrl ? 'URL linked' : 'No link'}
-                </span>
+              <div className="flex items-center justify-between pt-4 mt-4 border-t border-theme-border">
+                {cert.credentialUrl ? (
+                  <a
+                    href={cert.credentialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-600 dark:text-cyan-400 hover:underline"
+                  >
+                    <span>Verify Link</span>
+                    <FiExternalLink className="w-3 h-3" />
+                  </a>
+                ) : (
+                  <span className="text-[11px] font-mono text-theme-textMuted">Local Upload</span>
+                )}
                 <div className="flex items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => openEditCert(cert)}
-                    className="p-1.5 rounded-lg bg-gray-100 dark:bg-dark-surface text-gray-600 dark:text-gray-300 hover:text-brand-500"
+                    className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
                   >
                     <FiEdit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={() => handleCertDelete(cert._id)}
-                    className="p-1.5 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white"
+                    className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
                   >
                     <FiTrash2 className="w-3.5 h-3.5" />
                   </button>
@@ -334,11 +373,11 @@ const AdminEducationCertificates = () => {
       <Modal
         isOpen={isEduModalOpen}
         onClose={() => setIsEduModalOpen(false)}
-        title={editingEduId ? 'Edit Education' : 'Add Education'}
+        title={editingEduId ? 'Edit Education Record' : 'Add Education Record'}
       >
         <form onSubmit={handleEduSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Degree / Program *
             </label>
             <input
@@ -346,13 +385,13 @@ const AdminEducationCertificates = () => {
               value={eduForm.degree}
               onChange={(e) => setEduForm({ ...eduForm, degree: e.target.value })}
               required
-              placeholder="e.g. B.Tech Computer Science & Engineering"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="e.g. B.Tech Computer Science & Engineering (3rd Year)"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Institution / University *
             </label>
             <input
@@ -361,13 +400,13 @@ const AdminEducationCertificates = () => {
               onChange={(e) => setEduForm({ ...eduForm, institution: e.target.value })}
               required
               placeholder="SRMU Lucknow (Powered by Sunstone)"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Start Year *
               </label>
               <input
@@ -376,11 +415,11 @@ const AdminEducationCertificates = () => {
                 onChange={(e) => setEduForm({ ...eduForm, startDate: e.target.value })}
                 required
                 placeholder="2022"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 End Year
               </label>
               <input
@@ -388,25 +427,38 @@ const AdminEducationCertificates = () => {
                 value={eduForm.endDate}
                 onChange={(e) => setEduForm({ ...eduForm, endDate: e.target.value })}
                 placeholder="2026 or Present"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
-              Grade / CGPA
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Grade / CGPA Details
             </label>
             <input
               type="text"
               value={eduForm.grade}
               onChange={(e) => setEduForm({ ...eduForm, grade: e.target.value })}
-              placeholder="8.2 CGPA"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="8.2 CGPA / Current 3rd Year"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div>
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Description &amp; Highlights
+            </label>
+            <textarea
+              rows={3}
+              value={eduForm.description}
+              onChange={(e) => setEduForm({ ...eduForm, description: e.target.value })}
+              placeholder="Core focus areas, relevant projects, coursework..."
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans resize-none"
+            />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <Button variant="secondary" size="md" onClick={() => setIsEduModalOpen(false)}>
               Cancel
             </Button>
@@ -425,7 +477,7 @@ const AdminEducationCertificates = () => {
       >
         <form onSubmit={handleCertSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Certificate Title *
             </label>
             <input
@@ -433,14 +485,14 @@ const AdminEducationCertificates = () => {
               value={certForm.title}
               onChange={(e) => setCertForm({ ...certForm, title: e.target.value })}
               required
-              placeholder="e.g. Full Stack MERN Specialization"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="e.g. Academic Excellence Award / MERN Stack Mastery"
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Issuer *
               </label>
               <input
@@ -448,12 +500,12 @@ const AdminEducationCertificates = () => {
                 value={certForm.issuer}
                 onChange={(e) => setCertForm({ ...certForm, issuer: e.target.value })}
                 required
-                placeholder="Meta / MongoDB / Udemy"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder="SRMU / Sunstone / Meta"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
                 Issue Year *
               </label>
               <input
@@ -462,37 +514,37 @@ const AdminEducationCertificates = () => {
                 onChange={(e) => setCertForm({ ...certForm, issueDate: e.target.value })}
                 required
                 placeholder="2024"
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
               Credential Verification URL
             </label>
             <input
               type="url"
               value={certForm.credentialUrl}
               onChange={(e) => setCertForm({ ...certForm, credentialUrl: e.target.value })}
-              placeholder="https://coursera.org/verify/..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-dark-surface text-gray-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              placeholder="https://..."
+              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1.5">
-              Certificate Image (Optional)
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+              Certificate Image Photo
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setCertFile(e.target.files[0])}
-              className="text-xs text-gray-500"
+              className="text-xs font-mono text-theme-textMuted"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-theme-border">
             <Button variant="secondary" size="md" onClick={() => setIsCertModalOpen(false)}>
               Cancel
             </Button>

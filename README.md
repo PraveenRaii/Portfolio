@@ -185,16 +185,8 @@ npm run dev
 
 ---
 
-## 🔑 Default Accounts (Post-Seed)
 
-| Role | Email Address | Password | Permissions |
-| :--- | :--- | :--- | :--- |
-| **Administrator** | `praveen1234202040@gmail.com` | `AdminPraveen@2026` | Full Control over all data, projects, users & settings |
-| **Demo User** | `rohan.sharma@example.com` | `UserDemo@123` | Bookmarks, testimonials submission & messaging |
 
-*Note: The login page at `/login` provides 1-click **Quick Fill** buttons for both roles for convenient testing.*
-
----
 
 ## 🌐 Production Deployment
 

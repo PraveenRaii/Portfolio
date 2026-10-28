@@ -684,6 +684,17 @@ const updateAdminProfile = async (req, res, next) => {
         url: uploadRes.secure_url,
         public_id: uploadRes.public_id,
       };
+      if (req.user) {
+        await User.findByIdAndUpdate(req.user._id, { avatar: profile.avatar });
+      }
+    } else if (req.body.avatarUrl && req.body.avatarUrl.trim() !== '') {
+      profile.avatar = {
+        url: req.body.avatarUrl.trim(),
+        public_id: '',
+      };
+      if (req.user) {
+        await User.findByIdAndUpdate(req.user._id, { avatar: profile.avatar });
+      }
     }
 
     await profile.save();

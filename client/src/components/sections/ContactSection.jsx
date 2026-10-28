@@ -88,6 +88,37 @@ const ContactSection = ({ profile }) => {
           {/* Left Column: Direct Reachability & Details */}
           <div className="lg:col-span-5 space-y-6">
             
+            {/* Developer Contact Profile Header */}
+            <div className="p-4 rounded-3xl border border-theme-border bg-theme-surface shadow-subtle flex items-center gap-4">
+              <div className="relative shrink-0">
+                <img
+                  src={
+                    profile?.avatar?.url ||
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'
+                  }
+                  alt={profile?.name || 'Praveen Rai'}
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-indigo-500/30 shadow-sm"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                  }}
+                />
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-theme-surface" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-heading font-extrabold text-sm text-theme-text truncate">
+                  {profile?.name || 'Praveen Rai'}
+                </h3>
+                <p className="text-xs font-mono text-indigo-500 truncate">
+                  {profile?.roleTitle || 'Full Stack Developer'}
+                </p>
+                <p className="text-[11px] text-theme-textMuted font-mono truncate mt-0.5">
+                  {profile?.location || 'Lucknow, Uttar Pradesh, India'}
+                </p>
+              </div>
+            </div>
+
             {/* Availability Status Card */}
             <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface space-y-2 shadow-subtle">
               <div className="flex items-center gap-2">

@@ -13,8 +13,10 @@ import { adminService } from '../../services/adminService';
 import Button from '../../components/common/Button';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../context/AuthContext';
 
 const AdminSettings = () => {
+  const { refreshUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +34,7 @@ const AdminSettings = () => {
     twitter: '',
     leetcode: 'https://leetcode.com/u/Praveen_913/',
     instagram: '',
+    avatarUrl: '',
   });
 
   const [avatarFile, setAvatarFile] = useState(null);
@@ -62,6 +65,7 @@ const AdminSettings = () => {
           twitter: p.socialLinks?.twitter || '',
           leetcode: p.socialLinks?.leetcode || 'https://leetcode.com/u/Praveen_913/',
           instagram: p.socialLinks?.instagram || '',
+          avatarUrl: p.avatar?.url || '',
         });
         setAvatarPreview(p.avatar?.url || '');
       }
@@ -99,7 +103,10 @@ const AdminSettings = () => {
       const res = await adminService.updateProfile(data);
       if (res.success) {
         toast.success(res.message);
-        fetchProfile();
+        await fetchProfile();
+        if (refreshUser) {
+          await refreshUser();
+        }
       }
     } catch (err) {
       toast.error(err.message || 'Failed to update profile');
@@ -233,19 +240,57 @@ const AdminSettings = () => {
           </h2>
         </div>
 
-        {/* Avatar Upload */}
-        <div className="flex items-center gap-6">
-          <div className="relative group">
-            <img
-              src={avatarPreview || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
-              alt="Avatar"
-              className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/40"
-            />
+        {/* Avatar Upload & URL Controls */}
+        <div className="p-5 rounded-2xl border border-theme-border bg-theme-surfaceSecondary space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="relative group shrink-0">
+                <img
+                  src={
+                    avatarPreview ||
+                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'
+                  }
+                  alt="Avatar"
+                  className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/50 shadow-md group-hover:scale-105 transition-transform"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                  }}
+                />
+                <label
+                  htmlFor="admin-avatar-upload"
+                  className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity text-xs font-mono font-bold"
+                  title="Click to select image file"
+                >
+                  <FiCamera className="w-5 h-5" />
+                </label>
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-heading font-bold text-theme-text">Profile Photograph</p>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 text-[10px] font-mono font-semibold">
+                    Live on Homepage
+                  </span>
+                </div>
+                <p className="text-[11px] font-mono text-theme-textMuted mt-0.5 max-w-md">
+                  Upload an image from your computer OR paste a direct URL. Your photo updates instantly across the Hero, About, and Navigation on the public home page.
+                </p>
+                {avatarFile && (
+                  <p className="text-xs text-indigo-500 font-mono font-semibold mt-1">
+                    Selected file: {avatarFile.name} (ready to save)
+                  </p>
+                )}
+              </div>
+            </div>
+
             <label
               htmlFor="admin-avatar-upload"
-              className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-mono font-bold transition-all shadow-glowSm cursor-pointer shrink-0"
             >
-              <FiCamera className="w-5 h-5" />
+              <FiUploadCloud className="w-4 h-4" />
+              <span>Choose Image File</span>
             </label>
             <input
               id="admin-avatar-upload"
@@ -255,11 +300,24 @@ const AdminSettings = () => {
               className="hidden"
             />
           </div>
+
           <div>
-            <p className="text-xs font-heading font-bold text-theme-text">Profile Avatar</p>
-            <p className="text-[11px] font-mono text-theme-textMuted mt-0.5">
-              Click photo to replace. Handled via Cloudinary asset storage or local uploads.
-            </p>
+            <label className="block text-[11px] font-mono font-semibold uppercase tracking-wider text-theme-text mb-1">
+              Or Image URL Link (Optional):
+            </label>
+            <input
+              type="url"
+              placeholder="https://example.com/my-photo.jpg or Cloudinary URL"
+              value={formData.avatarUrl || ''}
+              onChange={(e) => {
+                const url = e.target.value;
+                setFormData({ ...formData, avatarUrl: url });
+                if (!avatarFile && url) {
+                  setAvatarPreview(url);
+                }
+              }}
+              className="w-full px-4 py-2 rounded-xl border border-theme-border bg-theme-surface text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+            />
           </div>
         </div>
 

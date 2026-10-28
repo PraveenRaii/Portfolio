@@ -8,6 +8,15 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to handle multipart/form-data with proper boundary
+api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    // Let browser/Axios automatically set multipart/form-data boundary
+    delete config.headers['Content-Type'];
+  }
+  return config;
+});
+
 // Response interceptor for centralized error response handling
 api.interceptors.response.use(
   (response) => response.data,

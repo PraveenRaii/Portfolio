@@ -6,7 +6,7 @@ import { publicService } from '../../services/publicService';
 import ThemeToggle from './ThemeToggle';
 import toast from 'react-hot-toast';
 
-const Navbar = () => {
+const Navbar = ({ profile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -14,6 +14,10 @@ const Navbar = () => {
 
   const { role, isAuthenticated } = useAuth();
   const location = useLocation();
+
+  const avatarSrc =
+    profile?.avatar?.url ||
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,14 +84,30 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
-          {/* Left: PR. Typographic Monogram & Status */}
+          {/* Left: PR. Typographic Monogram & Avatar & Status */}
           <div className="flex items-center gap-3">
             <a
               href="#home"
-              className="group flex items-center font-heading text-2xl font-black tracking-tight text-theme-text transition-colors"
+              className="group flex items-center gap-2.5 font-heading text-2xl font-black tracking-tight text-theme-text transition-colors"
             >
-              <span>PR</span>
-              <span className="text-indigo-500">.</span>
+              <div className="relative shrink-0">
+                <img
+                  src={avatarSrc}
+                  alt={profile?.name || 'Praveen Rai'}
+                  className="w-8 h-8 rounded-xl object-cover border border-theme-border group-hover:border-indigo-500 transition-colors shadow-subtle"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                  }}
+                />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-theme-surface" />
+              </div>
+
+              <div className="flex items-center">
+                <span>PR</span>
+                <span className="text-indigo-500">.</span>
+              </div>
             </a>
 
             <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[10px] font-mono tracking-wider uppercase text-emerald-600 dark:text-emerald-400 font-semibold">
@@ -116,37 +136,28 @@ const Navbar = () => {
             })}
           </nav>
 
-          {/* Right: Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            {/* Resume Action */}
+          {/* Right: Theme Toggle, Resume & Portal Actions */}
+          <div className="hidden md:flex items-center gap-2.5">
+            <ThemeToggle />
+
             <button
               type="button"
               onClick={handleDownloadResume}
               disabled={downloading}
-              className="inline-flex items-center gap-1.5 text-xs font-mono font-medium px-3.5 py-1.5 rounded-lg border border-theme-border bg-theme-surface text-theme-text hover:border-indigo-500 hover:text-indigo-500 transition-colors shadow-subtle"
-              title="Download Praveen Rai's Resume"
+              className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:border-indigo-500 text-theme-text transition-all shadow-subtle"
+              title="Download Praveen Rai's Latest Resume PDF"
             >
               <LuDownload className="w-3.5 h-3.5 text-indigo-500" />
-              <span>Resume</span>
-              <LuArrowUpRight className="w-3 h-3 text-theme-textMuted" />
+              <span>{downloading ? 'Loading...' : 'Resume'}</span>
             </button>
 
-            {/* Dark/Light Toggle */}
-            <ThemeToggle />
-
-            {/* Admin / Portal Login Action */}
             {isAuthenticated ? (
               <Link
                 to={role === 'admin' ? '/admin' : '/user'}
-                className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 shadow-glowSm transition-all"
-                title={role === 'admin' ? 'Admin Portal Dashboard' : 'User Dashboard'}
+                className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-glowSm transition-all"
               >
-                {role === 'admin' ? (
-                  <LuShield className="w-3.5 h-3.5" />
-                ) : (
-                  <LuUser className="w-3.5 h-3.5" />
-                )}
-                <span>{role === 'admin' ? 'Admin Portal' : 'User Portal'}</span>
+                {role === 'admin' ? <LuShield className="w-3.5 h-3.5" /> : <LuUser className="w-3.5 h-3.5" />}
+                <span>{role === 'admin' ? 'Admin' : 'Dashboard'}</span>
               </Link>
             ) : (
               <Link
@@ -178,6 +189,28 @@ const Navbar = () => {
       {/* Mobile Drawer */}
       {isOpen && (
         <div className="md:hidden border-b border-theme-border bg-theme-surface/98 backdrop-blur-xl px-6 py-6 mt-3 space-y-4 shadow-card">
+          {/* Mobile Profile Header */}
+          <div className="pb-4 border-b border-theme-border flex items-center gap-3">
+            <img
+              src={avatarSrc}
+              alt={profile?.name || 'Praveen Rai'}
+              className="w-10 h-10 rounded-xl object-cover border border-indigo-500/40"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src =
+                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+              }}
+            />
+            <div className="min-w-0">
+              <div className="font-heading font-bold text-sm text-theme-text truncate">
+                {profile?.name || 'Praveen Rai'}
+              </div>
+              <div className="font-mono text-xs text-indigo-500 truncate">
+                {profile?.roleTitle || 'Full Stack Developer'}
+              </div>
+            </div>
+          </div>
+
           <nav className="flex flex-col space-y-3">
             {navLinks.map((link) => (
               <a

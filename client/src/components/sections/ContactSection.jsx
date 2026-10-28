@@ -70,10 +70,10 @@ const ContactSection = ({ profile }) => {
         
         {/* Section Header */}
         <div className="mb-14 space-y-2">
-          <div className="text-theme-accent font-mono text-xs tracking-widestTechnical uppercase font-semibold">
+          <div className="text-indigo-600 dark:text-indigo-400 font-mono text-xs tracking-widestTechnical uppercase font-semibold">
             05 / SAY HELLO
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-theme-text tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-theme-text tracking-tight">
             Have an interesting problem? Let's build something.
           </h2>
           <p className="text-sm sm:text-base text-theme-textMuted max-w-xl">
@@ -88,7 +88,7 @@ const ContactSection = ({ profile }) => {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Availability Status Card */}
-            <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface space-y-2 shadow-subtle">
+            <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface space-y-2 shadow-subtle">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -105,7 +105,7 @@ const ContactSection = ({ profile }) => {
             </div>
 
             {/* Direct Email Card with One-Click Copy */}
-            <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface space-y-3 shadow-subtle">
+            <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface space-y-3 shadow-subtle">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[11px] text-theme-textMuted uppercase tracking-wider">
                   Direct Email
@@ -113,7 +113,7 @@ const ContactSection = ({ profile }) => {
                 <button
                   type="button"
                   onClick={handleCopyEmail}
-                  className="font-mono text-[11px] text-theme-accent hover:text-theme-accentHover flex items-center gap-1 transition-colors"
+                  className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 transition-colors font-semibold"
                   title="Copy email to clipboard"
                 >
                   {copied ? (
@@ -124,7 +124,7 @@ const ContactSection = ({ profile }) => {
                   ) : (
                     <>
                       <LuCopy className="w-3.5 h-3.5" />
-                      <span>Copy</span>
+                      <span>Copy Address</span>
                     </>
                   )}
                 </button>
@@ -132,7 +132,7 @@ const ContactSection = ({ profile }) => {
 
               <a
                 href={`mailto:${emailAddress}`}
-                className="font-mono text-sm sm:text-base font-semibold text-theme-text hover:text-theme-accent transition-colors block truncate"
+                className="font-mono text-sm sm:text-base font-semibold text-theme-text hover:text-indigo-500 transition-colors block truncate"
               >
                 {emailAddress}
               </a>
@@ -142,22 +142,22 @@ const ContactSection = ({ profile }) => {
             </div>
 
             {/* Location & Timezone Card */}
-            <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface space-y-2 shadow-subtle">
+            <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface space-y-2 shadow-subtle">
               <span className="font-mono text-[11px] text-theme-textMuted uppercase tracking-wider">
                 Location &amp; Working Hours
               </span>
               <div className="flex items-center gap-2 text-sm font-semibold text-theme-text">
-                <LuMapPin className="w-4 h-4 text-theme-accent shrink-0" />
+                <LuMapPin className="w-4 h-4 text-indigo-500 shrink-0" />
                 <span>Lucknow, Uttar Pradesh, India</span>
               </div>
               <div className="flex items-center gap-2 text-xs font-mono text-theme-textMuted pt-1">
                 <LuClock className="w-3.5 h-3.5" />
-                <span>India Standard Time (IST • UTC+05:30)</span>
+                <span>India Standard Time (IST &bull; UTC+05:30)</span>
               </div>
             </div>
 
             {/* Social Links Rows */}
-            <div className="rounded-2xl border border-theme-border bg-theme-surface overflow-hidden divide-y divide-theme-border shadow-subtle">
+            <div className="rounded-3xl border border-theme-border bg-theme-surface overflow-hidden divide-y divide-theme-border shadow-subtle">
               <a
                 href={linkedinUrl}
                 target="_blank"
@@ -165,7 +165,7 @@ const ContactSection = ({ profile }) => {
                 className="p-4 flex items-center justify-between text-theme-text hover:bg-theme-bg/60 transition-colors group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-theme-accent/10 text-theme-accent flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 flex items-center justify-center">
                     <LuLinkedin className="w-4 h-4" />
                   </div>
                   <div>
@@ -173,7 +173,7 @@ const ContactSection = ({ profile }) => {
                     <p className="text-[11px] font-mono text-theme-textMuted">/in/praveen-rai-9r13</p>
                   </div>
                 </div>
-                <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-theme-accent transition-colors" />
+                <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-indigo-500 transition-colors" />
               </a>
 
               <a
@@ -183,7 +183,7 @@ const ContactSection = ({ profile }) => {
                 className="p-4 flex items-center justify-between text-theme-text hover:bg-theme-bg/60 transition-colors group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-theme-accent/10 text-theme-accent flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 flex items-center justify-center">
                     <LuGithub className="w-4 h-4" />
                   </div>
                   <div>
@@ -191,13 +191,13 @@ const ContactSection = ({ profile }) => {
                     <p className="text-[11px] font-mono text-theme-textMuted">/PraveenRaii</p>
                   </div>
                 </div>
-                <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-theme-accent transition-colors" />
+                <LuArrowUpRight className="w-4 h-4 text-theme-textMuted group-hover:text-cyan-500 transition-colors" />
               </a>
             </div>
 
           </div>
 
-          {/* Right Column: Editorial Contact Form */}
+          {/* Right Column: Aesthetic Contact Form */}
           <div className="lg:col-span-7">
             <motion.form
               initial={{ opacity: 0, y: 15 }}
@@ -219,7 +219,7 @@ const ContactSection = ({ profile }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-1.5">
                   <label className="block font-mono text-xs text-theme-text font-medium">
-                    Your Name <span className="text-theme-accent">*</span>
+                    Your Name <span className="text-indigo-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -228,13 +228,13 @@ const ContactSection = ({ profile }) => {
                     onChange={handleChange}
                     placeholder="e.g. John Doe"
                     required
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors font-mono"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="block font-mono text-xs text-theme-text font-medium">
-                    Your Email <span className="text-theme-accent">*</span>
+                    Your Email <span className="text-indigo-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -243,7 +243,7 @@ const ContactSection = ({ profile }) => {
                     onChange={handleChange}
                     placeholder="e.g. john@example.com"
                     required
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors font-mono"
                   />
                 </div>
               </div>
@@ -258,13 +258,13 @@ const ContactSection = ({ profile }) => {
                   value={formData.subject}
                   onChange={handleChange}
                   placeholder="e.g. Internship Opportunity / Collaboration / Feedback"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors font-mono"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="block font-mono text-xs text-theme-text font-medium">
-                  Message <span className="text-theme-accent">*</span>
+                  Message <span className="text-indigo-500">*</span>
                 </label>
                 <textarea
                   name="message"
@@ -273,7 +273,7 @@ const ContactSection = ({ profile }) => {
                   onChange={handleChange}
                   placeholder="Tell me about your team, project requirements, or what you'd like to discuss..."
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent transition-colors resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-theme-border bg-theme-bg text-theme-text text-sm placeholder:text-theme-textMuted/60 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none font-mono"
                 />
               </div>
 

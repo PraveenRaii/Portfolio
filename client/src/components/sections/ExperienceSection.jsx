@@ -68,7 +68,6 @@ const fallbackCertificates = [
 ];
 
 const ExperienceSection = ({ education = [], certificates = [] }) => {
-  // Use passed data if populated, otherwise rich fallbacks
   const eduList =
     education && education.length > 0
       ? education.map((e) => ({
@@ -98,10 +97,10 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
         
         {/* Section Header */}
         <div className="mb-14 space-y-2">
-          <div className="text-theme-accent font-mono text-xs tracking-widestTechnical uppercase font-semibold">
+          <div className="text-indigo-600 dark:text-indigo-400 font-mono text-xs tracking-widestTechnical uppercase font-semibold">
             04 / JOURNEY
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-theme-text tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-heading font-extrabold text-theme-text tracking-tight">
             Milestones, learning &amp; education.
           </h2>
           <p className="text-sm sm:text-base text-theme-textMuted max-w-xl">
@@ -115,7 +114,9 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
           {/* Left Column: Education Timeline */}
           <div className="lg:col-span-7 space-y-8">
             <div className="flex items-center gap-2.5 pb-3 border-b border-theme-border">
-              <LuGraduationCap className="w-5 h-5 text-theme-accent" />
+              <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
+                <LuGraduationCap className="w-5 h-5" />
+              </div>
               <h3 className="font-heading text-lg font-bold text-theme-text">
                 Academic Background
               </h3>
@@ -132,13 +133,13 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                   className="relative group"
                 >
                   {/* Timeline Node */}
-                  <span className="absolute -left-[27px] top-1.5 w-3.5 h-3.5 rounded-full bg-theme-surface border-2 border-theme-accent flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
+                  <span className="absolute -left-[27px] top-1.5 w-3.5 h-3.5 rounded-full bg-theme-surface border-2 border-indigo-500 flex items-center justify-center">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                   </span>
 
-                  <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-theme-accent/40 transition-colors shadow-subtle space-y-3">
+                  <div className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-colors shadow-subtle space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="font-mono text-xs px-2.5 py-0.5 rounded border border-theme-border bg-theme-bg text-theme-accent font-medium">
+                      <span className="font-mono text-xs px-2.5 py-0.5 rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold">
                         {edu.period}
                       </span>
                       <span className="font-mono text-[11px] text-theme-textMuted uppercase">
@@ -147,10 +148,10 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                     </div>
 
                     <div>
-                      <h4 className="font-heading font-bold text-base text-theme-text">
+                      <h4 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
                         {edu.degree}
                       </h4>
-                      <p className="text-xs sm:text-sm font-medium text-theme-accent mt-0.5 flex items-center gap-1.5">
+                      <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 mt-0.5 flex items-center gap-1.5">
                         <LuBuilding2 className="w-3.5 h-3.5 shrink-0" />
                         {edu.institution}
                       </p>
@@ -162,7 +163,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                           key={hIdx}
                           className="text-xs text-theme-textMuted flex items-start gap-2 leading-relaxed"
                         >
-                          <LuCircleCheck className="w-3.5 h-3.5 text-theme-accent shrink-0 mt-0.5" />
+                          <LuCircleCheck className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -176,7 +177,9 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
           {/* Right Column: Credentials & Certifications */}
           <div className="lg:col-span-5 space-y-8">
             <div className="flex items-center gap-2.5 pb-3 border-b border-theme-border">
-              <LuAward className="w-5 h-5 text-theme-accent" />
+              <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-500">
+                <LuAward className="w-5 h-5" />
+              </div>
               <h3 className="font-heading text-lg font-bold text-theme-text">
                 Verified Credentials
               </h3>
@@ -190,11 +193,11 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.35, delay: idx * 0.08 }}
-                  className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-theme-accent/40 transition-colors shadow-subtle group flex flex-col justify-between"
+                  className="p-5 rounded-2xl border border-theme-border bg-theme-surface hover:border-cyan-500/40 transition-colors shadow-subtle group flex flex-col justify-between"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-theme-accent">
+                      <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-cyan-600 dark:text-cyan-400">
                         {cert.issuer}
                       </span>
                       <span className="font-mono text-[11px] text-theme-textMuted">
@@ -202,7 +205,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                       </span>
                     </div>
 
-                    <h4 className="font-heading font-semibold text-sm text-theme-text leading-snug group-hover:text-theme-accent transition-colors">
+                    <h4 className="font-heading font-semibold text-sm text-theme-text leading-snug group-hover:text-cyan-500 transition-colors">
                       {cert.title}
                     </h4>
 
@@ -226,7 +229,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                         href={cert.credentialUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-theme-accent hover:text-theme-accentHover transition-colors"
+                        className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
                       >
                         <span>Verify Credential</span>
                         <LuExternalLink className="w-3 h-3" />
@@ -238,8 +241,8 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
             </div>
 
             {/* Quick highlight block */}
-            <div className="p-4 rounded-xl border border-theme-border bg-theme-code/60 font-mono text-xs space-y-1.5 text-theme-text">
-              <div className="flex items-center gap-2 text-theme-accent font-semibold text-[11px]">
+            <div className="p-4 rounded-2xl border border-theme-border bg-indigo-500/5 font-mono text-xs space-y-1.5 text-theme-text">
+              <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-semibold text-[11px]">
                 <LuBookOpen className="w-4 h-4" />
                 <span>CONTINUOUS LEARNING INITIATIVE</span>
               </div>

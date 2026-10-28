@@ -10,6 +10,7 @@ import {
   LuLayers,
   LuCpu,
   LuDatabase,
+  LuSparkles,
 } from 'react-icons/lu';
 import Button from '../common/Button';
 
@@ -21,12 +22,12 @@ const HeroSection = ({ profile }) => {
       id="home"
       className="relative min-h-[92vh] flex items-center justify-center pt-28 pb-16 overflow-hidden"
     >
-      {/* Subtle Ambient Radial Lighting */}
-      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-theme-accent/10 dark:bg-theme-accent/15 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-[450px] h-[300px] bg-amber-500/5 dark:bg-amber-500/10 rounded-full blur-[110px] pointer-events-none" />
+      {/* Aesthetic Ambient Indigo & Cyan Lighting Mesh */}
+      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-indigo-600/15 dark:bg-indigo-500/20 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-16 right-10 w-[500px] h-[350px] bg-cyan-500/10 dark:bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none" />
 
-      {/* Subtle Dot Grid Overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(#E5DED2_1px,transparent_1px)] dark:bg-[radial-gradient(#282A24_1px,transparent_1px)] [background-size:24px_24px] opacity-60 pointer-events-none" />
+      {/* Modern Grid Background Texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] dark:bg-[radial-gradient(#1E2433_1px,transparent_1px)] [background-size:24px_24px] opacity-70 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -38,8 +39,8 @@ const HeroSection = ({ profile }) => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 space-y-6 text-left"
           >
-            {/* Small Eyebrow Label with Live Pulse */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-theme-border bg-theme-surface shadow-subtle text-theme-text text-[11px] font-mono tracking-widestTechnical uppercase">
+            {/* Small Eyebrow Label with Status Pulse */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/10 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 text-[11px] font-mono tracking-widestTechnical uppercase font-semibold shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -47,10 +48,10 @@ const HeroSection = ({ profile }) => {
               <span>PRAVEEN RAI &bull; FULL STACK DEVELOPER</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-heading font-bold text-theme-text tracking-tight leading-[1.12]">
+            {/* Main Aesthetic Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-heading font-extrabold text-theme-text tracking-tight leading-[1.12]">
               Building digital experiences with{' '}
-              <span className="text-theme-accent underline decoration-theme-accent/30 decoration-wavy underline-offset-8">
+              <span className="text-gradient font-black">
                 code
               </span>{' '}
               and{' '}
@@ -60,24 +61,24 @@ const HeroSection = ({ profile }) => {
             {/* Supporting Copy */}
             <p className="text-base sm:text-lg text-theme-textMuted max-w-xl leading-relaxed">
               {profile?.intro ||
-                "I'm a Computer Science student and developer focused on building practical, scalable web applications with Java, React, and Spring Boot."}
+                "I'm a Computer Science student and full stack developer focused on building scalable, performant web applications with Java, React, and Spring Boot."}
             </p>
 
-            {/* Academic & Tech Badges */}
+            {/* Aesthetic Tech Stack Pills */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-theme-border bg-theme-surface text-xs font-mono text-theme-text font-medium">
-                <span className="text-theme-accent">🎓</span> B.Tech 3rd Year &bull; SRMU Lucknow
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-theme-border bg-theme-surface shadow-subtle text-xs font-mono text-theme-text font-medium">
+                <span className="text-indigo-500">🎓</span> B.Tech 3rd Year &bull; SRMU Lucknow
               </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-theme-border bg-theme-surface text-xs font-mono text-theme-text font-medium">
-                <span className="text-theme-accent">⚡</span> Java &bull; Spring Boot &bull; React
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-theme-border bg-theme-surface shadow-subtle text-xs font-mono text-theme-text font-medium">
+                <span className="text-cyan-500">⚡</span> Java &bull; Spring Boot &bull; React
               </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-theme-border bg-theme-surface text-xs font-mono text-theme-text font-medium">
-                <span className="text-theme-accent">📍</span> Lucknow, India
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-theme-border bg-theme-surface shadow-subtle text-xs font-mono text-theme-text font-medium">
+                <span className="text-emerald-500">📍</span> Lucknow, India
               </span>
             </div>
 
-            {/* Prominent Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-3">
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 pt-3">
               <a href="#projects">
                 <Button variant="primary" size="lg" icon={LuArrowDown}>
                   Explore My Work
@@ -103,7 +104,7 @@ const HeroSection = ({ profile }) => {
 
             {/* Subtle Availability Label */}
             <div className="pt-2 flex items-center gap-2 text-xs font-mono text-theme-textMuted">
-              <span className="text-theme-accent font-bold">●</span>
+              <span className="text-indigo-500 font-bold">●</span>
               <span className="tracking-widestTechnical uppercase font-semibold text-theme-text">
                 OPEN TO INTERNSHIPS &amp; COLLABORATIONS
               </span>
@@ -121,29 +122,29 @@ const HeroSection = ({ profile }) => {
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-5 -right-3 z-20 px-3 py-1.5 rounded-xl border border-theme-border bg-theme-surface/90 backdrop-blur-md shadow-card text-xs font-mono text-theme-text flex items-center gap-1.5"
+              className="absolute -top-5 -right-3 z-20 px-3 py-1.5 rounded-xl border border-indigo-500/30 bg-theme-surface/90 backdrop-blur-md shadow-glowSm text-xs font-mono text-theme-text flex items-center gap-1.5"
             >
-              <span className="w-2 h-2 rounded-full bg-theme-accent"></span>
+              <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
               <span>Java 21 &bull; Spring Boot</span>
             </motion.div>
 
             <motion.div
               animate={{ y: [0, 6, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              className="absolute -bottom-5 -left-3 z-20 px-3 py-1.5 rounded-xl border border-theme-border bg-theme-surface/90 backdrop-blur-md shadow-card text-xs font-mono text-theme-text flex items-center gap-1.5"
+              className="absolute -bottom-5 -left-3 z-20 px-3 py-1.5 rounded-xl border border-cyan-500/30 bg-theme-surface/90 backdrop-blur-md shadow-cyanGlow text-xs font-mono text-theme-text flex items-center gap-1.5"
             >
-              <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
+              <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
               <span>React 18 &bull; MySQL</span>
             </motion.div>
 
             {/* Studio Workspace Code Window */}
-            <div className="relative rounded-2xl border border-theme-border bg-theme-surface shadow-card dark:shadow-cardDark overflow-hidden">
+            <div className="relative rounded-2xl border border-theme-border bg-theme-code shadow-card dark:shadow-cardDark overflow-hidden text-white">
               {/* Window Header with Controls and Tabs */}
-              <div className="flex items-center justify-between px-4 py-2.5 bg-theme-code border-b border-theme-codeBorder select-none">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-black/40 border-b border-white/10 select-none">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#E06C75] inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#E5C07B] inline-block"></span>
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#98C379] inline-block"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444] inline-block"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B] inline-block"></span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#10B981] inline-block"></span>
                 </div>
 
                 <div className="flex items-center gap-1 font-mono text-[11px]">
@@ -152,8 +153,8 @@ const HeroSection = ({ profile }) => {
                     onClick={() => setActiveCodeTab('controller')}
                     className={`px-2.5 py-0.5 rounded transition-all ${
                       activeCodeTab === 'controller'
-                        ? 'bg-theme-surface text-theme-accent font-semibold border border-theme-border'
-                        : 'text-theme-textMuted hover:text-theme-text'
+                        ? 'bg-white/10 text-indigo-300 font-semibold border border-white/10'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     PraveenController.java
@@ -163,8 +164,8 @@ const HeroSection = ({ profile }) => {
                     onClick={() => setActiveCodeTab('config')}
                     className={`px-2.5 py-0.5 rounded transition-all ${
                       activeCodeTab === 'config'
-                        ? 'bg-theme-surface text-theme-accent font-semibold border border-theme-border'
-                        : 'text-theme-textMuted hover:text-theme-text'
+                        ? 'bg-white/10 text-cyan-300 font-semibold border border-white/10'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     stack.json
@@ -175,11 +176,11 @@ const HeroSection = ({ profile }) => {
               </div>
 
               {/* Code Content with Line Numbers */}
-              <div className="p-4 sm:p-5 font-mono text-xs leading-relaxed overflow-x-auto text-theme-text select-none min-h-[300px]">
+              <div className="p-4 sm:p-5 font-mono text-xs leading-relaxed overflow-x-auto text-gray-200 select-none min-h-[300px]">
                 {activeCodeTab === 'controller' ? (
                   <div className="flex gap-4">
                     {/* Gutter */}
-                    <div className="text-theme-textMuted/40 select-none text-right font-mono text-[11px] leading-relaxed space-y-[2px]">
+                    <div className="text-gray-500 select-none text-right font-mono text-[11px] leading-relaxed space-y-[2px]">
                       <div>01</div>
                       <div>02</div>
                       <div>03</div>
@@ -197,44 +198,44 @@ const HeroSection = ({ profile }) => {
                     {/* Code Body */}
                     <div className="space-y-[2px] text-[11.5px] leading-relaxed font-mono">
                       <div>
-                        <span className="text-theme-accent font-semibold">@RestController</span>
+                        <span className="text-indigo-400 font-semibold">@RestController</span>
                       </div>
                       <div>
-                        <span className="text-theme-accent font-semibold">@RequestMapping</span>
-                        <span className="text-theme-textMuted">("/api/v1/engineer")</span>
+                        <span className="text-indigo-400 font-semibold">@RequestMapping</span>
+                        <span className="text-cyan-300">("/api/v1/engineer")</span>
                       </div>
                       <div>
-                        <span className="text-blue-500 font-semibold">public class</span>{' '}
-                        <span className="text-theme-text font-bold">PraveenRai</span> {'{'}
+                        <span className="text-purple-400 font-semibold">public class</span>{' '}
+                        <span className="text-white font-bold">PraveenRai</span> {'{'}
                       </div>
                       <div className="pl-4">
-                        <span className="text-blue-500">private final</span>{' '}
-                        <span className="text-theme-textMuted">String</span> role ={' '}
-                        <span className="text-emerald-600 dark:text-emerald-400">"Full Stack Dev"</span>;
+                        <span className="text-purple-400">private final</span>{' '}
+                        <span className="text-yellow-300">String</span> role ={' '}
+                        <span className="text-emerald-400">"Full Stack Dev"</span>;
                       </div>
                       <div className="pl-4">
-                        <span className="text-blue-500">private final</span>{' '}
-                        <span className="text-theme-textMuted">String</span> education ={' '}
-                        <span className="text-emerald-600 dark:text-emerald-400">"SRMU Lucknow"</span>;
+                        <span className="text-purple-400">private final</span>{' '}
+                        <span className="text-yellow-300">String</span> education ={' '}
+                        <span className="text-emerald-400">"SRMU Lucknow"</span>;
                       </div>
                       <div className="pl-4">
-                        <span className="text-theme-accent font-semibold">@GetMapping</span>
-                        <span className="text-theme-textMuted">("/readiness")</span>
+                        <span className="text-indigo-400 font-semibold">@GetMapping</span>
+                        <span className="text-cyan-300">("/readiness")</span>
                       </div>
                       <div className="pl-4">
-                        <span className="text-blue-500">public</span> Response{' '}
-                        <span className="text-amber-600 dark:text-amber-400">getStatus</span>() {'{'}
+                        <span className="text-purple-400">public</span> Response{' '}
+                        <span className="text-amber-300">getStatus</span>() {'{'}
                       </div>
                       <div className="pl-8">
-                        <span className="text-blue-500">return</span> Response.builder()
+                        <span className="text-purple-400">return</span> Response.builder()
                       </div>
-                      <div className="pl-12 text-emerald-600 dark:text-emerald-400">
-                        .status("Available For Hire")
+                      <div className="pl-12 text-emerald-400">
+                        .status("Available For Opportunities")
                       </div>
-                      <div className="pl-12 text-emerald-600 dark:text-emerald-400">
-                        .stack(List.of("Java", "React", "Spring Boot", "MySQL"))
+                      <div className="pl-12 text-emerald-400">
+                        .stack(List.of("Java", "Spring Boot", "React", "MySQL"))
                       </div>
-                      <div className="pl-12 text-emerald-600 dark:text-emerald-400">
+                      <div className="pl-12 text-emerald-400">
                         .build();
                       </div>
                       <div className="pl-4">{'}'}</div>
@@ -245,30 +246,30 @@ const HeroSection = ({ profile }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-1.5 text-[11.5px] font-mono text-theme-textMuted">
-                    <p className="text-theme-text font-semibold">{'{'}</p>
-                    <p className="pl-4">"engineer": <span className="text-theme-accent">"Praveen Rai"</span>,</p>
-                    <p className="pl-4">"primary_languages": [<span className="text-emerald-600 dark:text-emerald-400">"Java"</span>, <span className="text-emerald-600 dark:text-emerald-400">"JavaScript"</span>, <span className="text-emerald-600 dark:text-emerald-400">"SQL"</span>],</p>
-                    <p className="pl-4">"frameworks": [<span className="text-emerald-600 dark:text-emerald-400">"Spring Boot"</span>, <span className="text-emerald-600 dark:text-emerald-400">"React"</span>, <span className="text-emerald-600 dark:text-emerald-400">"Node.js"</span>],</p>
-                    <p className="pl-4">"databases": [<span className="text-emerald-600 dark:text-emerald-400">"MySQL"</span>, <span className="text-emerald-600 dark:text-emerald-400">"MongoDB"</span>],</p>
-                    <p className="pl-4">"university": <span className="text-theme-accent">"SRMU Lucknow (Powered by Sunstone)"</span>,</p>
-                    <p className="pl-4">"degree": <span className="text-theme-accent">"B.Tech CSE (3rd Year)"</span>,</p>
-                    <p className="pl-4">"location": <span className="text-theme-accent">"Lucknow, UP, India"</span></p>
-                    <p className="text-theme-text font-semibold">{'}'}</p>
+                  <div className="space-y-1.5 text-[11.5px] font-mono text-gray-300">
+                    <p className="text-white font-semibold">{'{'}</p>
+                    <p className="pl-4">"engineer": <span className="text-indigo-300">"Praveen Rai"</span>,</p>
+                    <p className="pl-4">"primary_languages": [<span className="text-emerald-400">"Java"</span>, <span className="text-emerald-400">"JavaScript"</span>, <span className="text-emerald-400">"SQL"</span>],</p>
+                    <p className="pl-4">"frameworks": [<span className="text-emerald-400">"Spring Boot"</span>, <span className="text-emerald-400">"React"</span>, <span className="text-emerald-400">"Express"</span>],</p>
+                    <p className="pl-4">"databases": [<span className="text-cyan-300">"MySQL"</span>, <span className="text-cyan-300">"MongoDB"</span>],</p>
+                    <p className="pl-4">"university": <span className="text-indigo-300">"SRMU Lucknow (Powered by Sunstone)"</span>,</p>
+                    <p className="pl-4">"degree": <span className="text-indigo-300">"B.Tech CSE (3rd Year)"</span>,</p>
+                    <p className="pl-4">"location": <span className="text-emerald-400">"Lucknow, UP, India"</span></p>
+                    <p className="text-white font-semibold">{'}'}</p>
                   </div>
                 )}
               </div>
 
               {/* Terminal Bottom Status Bar */}
-              <div className="px-4 py-1.5 bg-theme-code/90 border-t border-theme-codeBorder flex items-center justify-between text-[10px] font-mono text-theme-textMuted">
+              <div className="px-4 py-1.5 bg-black/60 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-gray-400">
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                   <span>git: main</span>
                   <span>&bull;</span>
                   <span>UTF-8</span>
                 </div>
                 <div>
-                  <span className="text-theme-accent font-semibold">Spring Boot 3.2</span> &bull; Port 5000
+                  <span className="text-indigo-400 font-semibold">Spring Boot 3.2</span> &bull; Port 5000
                 </div>
               </div>
             </div>

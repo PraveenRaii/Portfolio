@@ -336,9 +336,9 @@ const deleteEducation = async (req, res, next) => {
 
 const createCertificate = async (req, res, next) => {
   try {
-    const { title, issuer, issueDate, credentialUrl, order } = req.body;
+    const { title, issuer, issueDate, credentialUrl, type, description, skills, imageUrl, order } = req.body;
     let imageData = {
-      url: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60',
+      url: imageUrl || 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60',
       public_id: '',
     };
 
@@ -356,12 +356,15 @@ const createCertificate = async (req, res, next) => {
       title,
       issuer,
       issueDate,
-      credentialUrl,
+      credentialUrl: credentialUrl || '',
+      type: type || 'Achievement Award',
+      description: description || '',
+      skills: Array.isArray(skills) ? skills : typeof skills === 'string' && skills ? skills.split(',').map(s => s.trim()) : [],
       image: imageData,
       order: Number(order) || 0,
     });
 
-    res.status(201).json({ success: true, message: 'Certificate created successfully', data: certificate });
+    res.status(201).json({ success: true, message: 'Achievement created successfully', data: certificate });
   } catch (error) {
     next(error);
   }
@@ -370,13 +373,18 @@ const createCertificate = async (req, res, next) => {
 const updateCertificate = async (req, res, next) => {
   try {
     const cert = await Certificate.findById(req.params.id);
-    if (!cert) return res.status(404).json({ success: false, message: 'Certificate not found' });
+    if (!cert) return res.status(404).json({ success: false, message: 'Achievement not found' });
 
-    const { title, issuer, issueDate, credentialUrl, order } = req.body;
+    const { title, issuer, issueDate, credentialUrl, type, description, skills, imageUrl, order } = req.body;
     if (title) cert.title = title;
     if (issuer) cert.issuer = issuer;
     if (issueDate) cert.issueDate = issueDate;
     if (credentialUrl !== undefined) cert.credentialUrl = credentialUrl;
+    if (type) cert.type = type;
+    if (description !== undefined) cert.description = description;
+    if (skills !== undefined) {
+      cert.skills = Array.isArray(skills) ? skills : typeof skills === 'string' ? skills.split(',').map(s => s.trim()) : [];
+    }
     if (order !== undefined) cert.order = Number(order);
 
     if (req.file) {
@@ -390,10 +398,15 @@ const updateCertificate = async (req, res, next) => {
         url: uploadRes.secure_url,
         public_id: uploadRes.public_id,
       };
+    } else if (imageUrl && imageUrl.trim() !== '') {
+      cert.image = {
+        url: imageUrl.trim(),
+        public_id: '',
+      };
     }
 
     await cert.save();
-    res.status(200).json({ success: true, message: 'Certificate updated successfully', data: cert });
+    res.status(200).json({ success: true, message: 'Achievement updated successfully', data: cert });
   } catch (error) {
     next(error);
   }

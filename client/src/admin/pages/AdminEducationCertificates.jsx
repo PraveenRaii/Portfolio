@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiBookOpen, FiAward, FiExternalLink } from 'react-icons/fi';
+import {
+  FiPlus,
+  FiEdit2,
+  FiTrash2,
+  FiBookOpen,
+  FiAward,
+  FiExternalLink,
+  FiUploadCloud,
+  FiImage,
+  FiEye,
+  FiCheckCircle,
+} from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import { publicService } from '../../services/publicService';
 import Button from '../../components/common/Button';
@@ -7,13 +18,22 @@ import Modal from '../../components/common/Modal';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
 
+const achievementTypes = [
+  'Official Achievement Award',
+  'Academic Honor',
+  'Hackathon Award',
+  'Professional Certification',
+  'Coding Competition',
+  'Special Recognition',
+];
+
 const AdminEducationCertificates = () => {
-  const [activeTab, setActiveTab] = useState('education');
+  const [activeTab, setActiveTab] = useState('achievements');
   const [educationList, setEducationList] = useState([]);
   const [certList, setCertList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Education modal
+  // Education modal state
   const [isEduModalOpen, setIsEduModalOpen] = useState(false);
   const [editingEduId, setEditingEduId] = useState(null);
   const [eduForm, setEduForm] = useState({
@@ -26,16 +46,21 @@ const AdminEducationCertificates = () => {
     description: '',
   });
 
-  // Certificate modal
+  // Achievement / Certificate modal state
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [editingCertId, setEditingCertId] = useState(null);
   const [certForm, setCertForm] = useState({
     title: '',
     issuer: '',
     issueDate: '',
+    type: 'Official Achievement Award',
+    description: '',
+    skills: '',
     credentialUrl: '',
+    imageUrl: '',
   });
   const [certFile, setCertFile] = useState(null);
+  const [certPreview, setCertPreview] = useState('');
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -58,7 +83,7 @@ const AdminEducationCertificates = () => {
     fetchData();
   }, []);
 
-  // Education Actions
+  // Education Handlers
   const openAddEdu = () => {
     setEditingEduId(null);
     setEduForm({
@@ -122,29 +147,47 @@ const AdminEducationCertificates = () => {
     }
   };
 
-  // Certificate Actions
+  // Achievement / Certificate Handlers
   const openAddCert = () => {
     setEditingCertId(null);
     setCertForm({
       title: '',
-      issuer: '',
-      issueDate: '',
+      issuer: 'SRMU Lucknow / Sunstone',
+      issueDate: '2024',
+      type: 'Official Achievement Award',
+      description: '',
+      skills: '',
       credentialUrl: '',
+      imageUrl: '',
     });
     setCertFile(null);
+    setCertPreview('');
     setIsCertModalOpen(true);
   };
 
   const openEditCert = (item) => {
     setEditingCertId(item._id);
     setCertForm({
-      title: item.title,
-      issuer: item.issuer,
-      issueDate: item.issueDate,
+      title: item.title || '',
+      issuer: item.issuer || '',
+      issueDate: item.issueDate || '',
+      type: item.type || 'Official Achievement Award',
+      description: item.description || '',
+      skills: Array.isArray(item.skills) ? item.skills.join(', ') : item.skills || '',
       credentialUrl: item.credentialUrl || '',
+      imageUrl: item.image?.url || '',
     });
     setCertFile(null);
+    setCertPreview(item.image?.url || '');
     setIsCertModalOpen(true);
+  };
+
+  const handleCertFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCertFile(file);
+      setCertPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleCertSubmit = async (e) => {
@@ -155,7 +198,13 @@ const AdminEducationCertificates = () => {
       data.append('title', certForm.title);
       data.append('issuer', certForm.issuer);
       data.append('issueDate', certForm.issueDate);
+      data.append('type', certForm.type);
+      data.append('description', certForm.description);
+      data.append('skills', certForm.skills);
       data.append('credentialUrl', certForm.credentialUrl);
+      if (certForm.imageUrl) {
+        data.append('imageUrl', certForm.imageUrl);
+      }
       if (certFile) {
         data.append('image', certFile);
       }
@@ -167,7 +216,7 @@ const AdminEducationCertificates = () => {
         res = await adminService.createCertificate(data);
       }
       if (res.success) {
-        toast.success(res.message);
+        toast.success(res.message || 'Achievement saved successfully');
         setIsCertModalOpen(false);
         fetchData();
       }
@@ -179,11 +228,11 @@ const AdminEducationCertificates = () => {
   };
 
   const handleCertDelete = async (id) => {
-    if (!window.confirm('Delete this certificate entry?')) return;
+    if (!window.confirm('Delete this achievement entry?')) return;
     try {
       const res = await adminService.deleteCertificate(id);
       if (res.success) {
-        toast.success('Certificate deleted');
+        toast.success('Achievement deleted');
         setCertList((prev) => prev.filter((c) => c._id !== id));
       }
     } catch (err) {
@@ -193,35 +242,50 @@ const AdminEducationCertificates = () => {
 
   return (
     <div className="space-y-6 animate-fadeIn">
+      {/* Top Header Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-theme-surface border border-theme-border shadow-card">
         <div>
           <div className="flex items-center gap-2 text-indigo-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold mb-1">
             <FiAward className="w-3.5 h-3.5" />
-            ACADEMICS &amp; HONORS
+            ACHIEVEMENT &amp; ACADEMICS MANAGER
           </div>
           <h1 className="text-2xl font-heading font-extrabold text-theme-text">
-            Academics &amp; Certifications
+            Achievements, Photos &amp; Academics
           </h1>
           <p className="text-xs sm:text-sm text-theme-textMuted mt-0.5">
-            Maintain your university degrees, bootcamps, and verified achievement credentials.
+            Add achievement photos, hackathon trophies, and university degree milestones.
+            All photos immediately appear on the public homepage.
           </p>
         </div>
 
         <div>
-          {activeTab === 'education' ? (
-            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddEdu}>
-              Add Education
+          {activeTab === 'achievements' ? (
+            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddCert}>
+              Add Achievement Photo
             </Button>
           ) : (
-            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddCert}>
-              Add Certificate
+            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddEdu}>
+              Add Education
             </Button>
           )}
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Navigation Tabs */}
       <div className="flex gap-2 border-b border-theme-border pb-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab('achievements')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold transition-all ${
+            activeTab === 'achievements'
+              ? 'bg-indigo-600 text-white shadow-glowSm'
+              : 'text-theme-textMuted hover:text-theme-text hover:bg-theme-surfaceSecondary'
+          }`}
+        >
+          <FiAward className="w-4 h-4" />
+          <span>Achievements &amp; Photos ({certList.length})</span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveTab('education')}
@@ -232,26 +296,115 @@ const AdminEducationCertificates = () => {
           }`}
         >
           <FiBookOpen className="w-4 h-4" />
-          <span>Education ({educationList.length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('certificates')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-mono font-bold transition-all ${
-            activeTab === 'certificates'
-              ? 'bg-indigo-600 text-white shadow-glowSm'
-              : 'text-theme-textMuted hover:text-theme-text hover:bg-theme-surfaceSecondary'
-          }`}
-        >
-          <FiAward className="w-4 h-4" />
-          <span>Certificates &amp; Awards ({certList.length})</span>
+          <span>Academic Background ({educationList.length})</span>
         </button>
       </div>
 
       {loading ? (
         <LoadingSkeleton count={3} />
-      ) : activeTab === 'education' ? (
+      ) : activeTab === 'achievements' ? (
+        /* Achievements & Photos Grid */
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-xs font-mono text-theme-textMuted px-1">
+            <span>
+              Showing {certList.length} verified achievement credentials &bull; Click card to preview
+            </span>
+            <span className="text-indigo-500 font-semibold">
+              Live on Home Page Section 04
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {certList.map((cert) => (
+              <div
+                key={cert._id}
+                className="rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-cyan-500/50 transition-all flex flex-col justify-between group overflow-hidden"
+              >
+                <div className="space-y-3">
+                  {/* Photo Preview Thumbnail */}
+                  <div className="relative h-44 w-full overflow-hidden bg-theme-surfaceSecondary border-b border-theme-border group/img">
+                    <img
+                      src={
+                        cert.image?.url ||
+                        'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60'
+                      }
+                      alt={cert.title}
+                      className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end justify-between p-3.5">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-white px-2.5 py-0.5 rounded-md bg-black/60 backdrop-blur-sm border border-white/20">
+                        {cert.type || 'Achievement'}
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-indigo-500/80 text-white font-mono text-[10px] font-semibold">
+                        {cert.issueDate}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Body Content */}
+                  <div className="p-4 space-y-2">
+                    <p className="text-[11px] font-mono text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-wider">
+                      {cert.issuer}
+                    </p>
+                    <h3 className="font-heading font-bold text-sm text-theme-text group-hover:text-cyan-500 transition-colors leading-snug">
+                      {cert.title}
+                    </h3>
+                    {cert.description && (
+                      <p className="text-xs text-theme-textMuted line-clamp-2 leading-relaxed">
+                        {cert.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="p-4 pt-3 border-t border-theme-border flex items-center justify-between text-xs font-mono">
+                  {cert.credentialUrl ? (
+                    <a
+                      href={cert.credentialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-cyan-600 dark:text-cyan-400 hover:underline font-semibold"
+                    >
+                      <span>Verify Link</span>
+                      <FiExternalLink className="w-3 h-3" />
+                    </a>
+                  ) : (
+                    <span className="text-[11px] text-emerald-500 font-semibold flex items-center gap-1">
+                      <FiCheckCircle className="w-3 h-3" />
+                      <span>Verified Photo</span>
+                    </span>
+                  )}
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => openEditCert(cert)}
+                      className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
+                      title="Edit Achievement"
+                    >
+                      <FiEdit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCertDelete(cert._id)}
+                      className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
+                      title="Delete Achievement"
+                    >
+                      <FiTrash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
         /* Education List */
         <div className="space-y-4">
           {educationList.map((edu) => (
@@ -266,7 +419,7 @@ const AdminEducationCertificates = () => {
                   </span>
                   {edu.grade && (
                     <span className="font-mono text-xs text-theme-textMuted">
-                      {edu.grade}
+                      Grade: {edu.grade}
                     </span>
                   )}
                 </div>
@@ -304,102 +457,39 @@ const AdminEducationCertificates = () => {
             </div>
           ))}
         </div>
-      ) : (
-        /* Certificates List */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {certList.map((cert) => (
-            <div
-              key={cert._id}
-              className="p-5 rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-cyan-500/40 transition-all flex flex-col justify-between group overflow-hidden"
-            >
-              <div className="space-y-3">
-                {cert.image?.url && (
-                  <div className="h-32 w-full rounded-2xl overflow-hidden bg-theme-surfaceSecondary border border-theme-border">
-                    <img
-                      src={cert.image.url}
-                      alt={cert.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                )}
-                <div>
-                  <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
-                    <span>{cert.issuer}</span>
-                    <span className="text-theme-textMuted">{cert.issueDate}</span>
-                  </div>
-                  <h3 className="font-heading font-bold text-sm text-theme-text group-hover:text-cyan-500 transition-colors mt-1">
-                    {cert.title}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 mt-4 border-t border-theme-border">
-                {cert.credentialUrl ? (
-                  <a
-                    href={cert.credentialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-600 dark:text-cyan-400 hover:underline"
-                  >
-                    <span>Verify Link</span>
-                    <FiExternalLink className="w-3 h-3" />
-                  </a>
-                ) : (
-                  <span className="text-[11px] font-mono text-theme-textMuted">Local Upload</span>
-                )}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => openEditCert(cert)}
-                    className="p-2 rounded-xl bg-theme-surfaceSecondary text-theme-textMuted hover:text-indigo-500 border border-theme-border transition-colors"
-                  >
-                    <FiEdit2 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleCertDelete(cert._id)}
-                    className="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-colors"
-                  >
-                    <FiTrash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       )}
 
       {/* Education Modal */}
       <Modal
         isOpen={isEduModalOpen}
         onClose={() => setIsEduModalOpen(false)}
-        title={editingEduId ? 'Edit Education Record' : 'Add Education Record'}
+        title={editingEduId ? 'Edit Academic Background' : 'Add Academic Background'}
       >
         <form onSubmit={handleEduSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Degree / Program *
+              Degree / Program Name *
             </label>
             <input
               type="text"
               value={eduForm.degree}
               onChange={(e) => setEduForm({ ...eduForm, degree: e.target.value })}
               required
-              placeholder="e.g. B.Tech Computer Science & Engineering (3rd Year)"
+              placeholder="e.g. Bachelor of Technology (B.Tech) in CSE"
               className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Institution / University *
+              University / Institution *
             </label>
             <input
               type="text"
               value={eduForm.institution}
               onChange={(e) => setEduForm({ ...eduForm, institution: e.target.value })}
               required
-              placeholder="SRMU Lucknow (Powered by Sunstone)"
+              placeholder="Shri Ramswaroop Memorial University (SRMU), Lucknow"
               className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
@@ -418,9 +508,10 @@ const AdminEducationCertificates = () => {
                 className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
+
             <div>
               <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-                End Year
+                End Year / Status
               </label>
               <input
                 type="text"
@@ -434,13 +525,13 @@ const AdminEducationCertificates = () => {
 
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Grade / CGPA Details
+              Grade / Percentage / CGPA (Optional)
             </label>
             <input
               type="text"
               value={eduForm.grade}
               onChange={(e) => setEduForm({ ...eduForm, grade: e.target.value })}
-              placeholder="8.2 CGPA / Current 3rd Year"
+              placeholder="e.g. 8.5 CGPA / 85%"
               className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
@@ -469,78 +560,150 @@ const AdminEducationCertificates = () => {
         </form>
       </Modal>
 
-      {/* Certificate Modal */}
+      {/* Achievement & Photo Modal */}
       <Modal
         isOpen={isCertModalOpen}
         onClose={() => setIsCertModalOpen(false)}
-        title={editingCertId ? 'Edit Certificate' : 'Add Certificate'}
+        title={editingCertId ? 'Edit Achievement Photo & Details' : 'Add Achievement Photo & Credential'}
       >
         <form onSubmit={handleCertSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Certificate Title *
+              Achievement Title *
             </label>
             <input
               type="text"
               value={certForm.title}
               onChange={(e) => setCertForm({ ...certForm, title: e.target.value })}
               required
-              placeholder="e.g. Academic Excellence Award / MERN Stack Mastery"
+              placeholder="e.g. Academic Excellence Award / Hackathon 1st Place / MERN Certification"
               className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-                Issuer *
+                Awarding Body / Organization *
               </label>
               <input
                 type="text"
                 value={certForm.issuer}
                 onChange={(e) => setCertForm({ ...certForm, issuer: e.target.value })}
                 required
-                placeholder="SRMU / Sunstone / Meta"
+                placeholder="SRMU Lucknow / Sunstone / Oracle"
                 className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
+
             <div>
               <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-                Issue Year *
+                Category / Type
+              </label>
+              <select
+                value={certForm.type}
+                onChange={(e) => setCertForm({ ...certForm, type: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
+              >
+                {achievementTypes.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+                Issue Year / Date *
               </label>
               <input
                 type="text"
                 value={certForm.issueDate}
                 onChange={(e) => setCertForm({ ...certForm, issueDate: e.target.value })}
                 required
-                placeholder="2024"
+                placeholder="2024 or Nov 2024"
+                className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
+                Credential Verification Link (Optional)
+              </label>
+              <input
+                type="url"
+                value={certForm.credentialUrl}
+                onChange={(e) => setCertForm({ ...certForm, credentialUrl: e.target.value })}
+                placeholder="https://..."
                 className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Credential Verification URL
+          {/* Achievement Photo Upload & Live Preview */}
+          <div className="p-4 rounded-2xl border border-theme-border bg-theme-surfaceSecondary space-y-3">
+            <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text">
+              Achievement Photo Upload
             </label>
-            <input
-              type="url"
-              value={certForm.credentialUrl}
-              onChange={(e) => setCertForm({ ...certForm, credentialUrl: e.target.value })}
-              placeholder="https://..."
-              className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
-            />
+
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="relative w-28 h-20 rounded-xl overflow-hidden border-2 border-indigo-500/30 bg-theme-surface shrink-0 shadow-sm flex items-center justify-center">
+                {certPreview ? (
+                  <img
+                    src={certPreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60';
+                    }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center text-theme-textMuted text-[10px] font-mono">
+                    <FiImage className="w-6 h-6 mb-1 opacity-60" />
+                    <span>No Photo</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="w-full space-y-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCertFileChange}
+                  className="w-full text-xs font-mono text-theme-textMuted file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-mono file:bg-indigo-500/10 file:text-indigo-500 hover:file:bg-indigo-500/20 cursor-pointer"
+                />
+                <input
+                  type="url"
+                  placeholder="Or paste direct Image URL (https://...)"
+                  value={certForm.imageUrl || ''}
+                  onChange={(e) => {
+                    const url = e.target.value;
+                    setCertForm({ ...certForm, imageUrl: url });
+                    if (!certFile && url) {
+                      setCertPreview(url);
+                    }
+                  }}
+                  className="w-full px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface text-theme-text text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                />
+              </div>
+            </div>
           </div>
 
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Certificate Image Photo
+              Description &amp; Key Highlights
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setCertFile(e.target.files[0])}
-              className="text-xs font-mono text-theme-textMuted"
+            <textarea
+              rows={2}
+              value={certForm.description}
+              onChange={(e) => setCertForm({ ...certForm, description: e.target.value })}
+              placeholder="e.g. Secured 1st place in 24-hr university hackathon / Scored highest in semester examinations"
+              className="w-full px-4 py-2 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans resize-none"
             />
           </div>
 
@@ -549,7 +712,7 @@ const AdminEducationCertificates = () => {
               Cancel
             </Button>
             <Button variant="primary" size="md" type="submit" isLoading={submitting}>
-              Save Certificate
+              Save Achievement Photo
             </Button>
           </div>
         </form>

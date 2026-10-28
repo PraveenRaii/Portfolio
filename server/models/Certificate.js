@@ -4,17 +4,32 @@ const certificateSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, 'Please provide certificate title'],
+      required: [true, 'Please provide certificate or achievement title'],
       trim: true,
     },
     issuer: {
       type: String,
-      required: [true, 'Please provide issuing organization'],
+      required: [true, 'Please provide issuing organization or event'],
       trim: true,
     },
     issueDate: {
       type: String,
-      required: [true, 'Issue date is required'],
+      required: [true, 'Issue date or year is required'],
+      trim: true,
+    },
+    type: {
+      type: String,
+      default: 'Achievement Award',
+      trim: true,
+    },
+    description: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    skills: {
+      type: [String],
+      default: [],
     },
     credentialUrl: {
       type: String,

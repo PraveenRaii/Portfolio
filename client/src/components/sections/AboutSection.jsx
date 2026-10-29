@@ -145,20 +145,28 @@ const AboutSection = ({ profile }) => {
 
           {/* Right: Narrative, Philosophy & Focus Cards */}
           <div className="lg:col-span-7 space-y-6">
-            <p className="text-base sm:text-lg text-theme-text leading-relaxed font-normal">
-              I am a 3rd-year Computer Science &amp; Engineering student at{' '}
-              <strong className="font-semibold text-theme-text underline decoration-indigo-500/30">
-                Shri Ramswaroop Memorial University (SRMU), Lucknow (Powered by Sunstone)
-              </strong>
-              . My focus centers on full stack development — bridging solid Java &amp; Spring Boot
-              backend architectures with responsive, component-driven React frontends.
-            </p>
+            {profile?.aboutText ? (
+              <p className="text-base sm:text-lg text-theme-text leading-relaxed font-normal whitespace-pre-line">
+                {profile.aboutText}
+              </p>
+            ) : (
+              <>
+                <p className="text-base sm:text-lg text-theme-text leading-relaxed font-normal">
+                  I am a 3rd-year Computer Science &amp; Engineering student at{' '}
+                  <strong className="font-semibold text-theme-text underline decoration-indigo-500/30">
+                    Shri Ramswaroop Memorial University (SRMU), Lucknow (Powered by Sunstone)
+                  </strong>
+                  . My focus centers on full stack development — bridging solid Java &amp; Spring Boot
+                  backend architectures with responsive, component-driven React frontends.
+                </p>
 
-            <p className="text-sm sm:text-base text-theme-textMuted leading-relaxed">
-              Whether building a citizen grievance portal or an enterprise asset tracker, I approach
-              each challenge with a balance of engineering rigor and human-centered design. I enjoy
-              dissecting complex system requirements into modular, maintainable codebases.
-            </p>
+                <p className="text-sm sm:text-base text-theme-textMuted leading-relaxed">
+                  Whether building a citizen grievance portal or an enterprise asset tracker, I approach
+                  each challenge with a balance of engineering rigor and human-centered design. I enjoy
+                  dissecting complex system requirements into modular, maintainable codebases.
+                </p>
+              </>
+            )}
 
             {/* Aesthetic Philosophy Callout */}
             <blockquote className="p-5 rounded-2xl border-l-4 border-indigo-500 bg-theme-surface border border-theme-border my-4 shadow-card">

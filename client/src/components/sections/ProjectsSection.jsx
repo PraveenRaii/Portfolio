@@ -285,7 +285,7 @@ const ProjectsSection = ({ projects = [] }) => {
             preview: previewContent,
           };
         })
-      : fallbackProjects;
+      : [];
 
   const handleToggleLike = async (projectId) => {
     if (!user) {
@@ -343,9 +343,34 @@ const ProjectsSection = ({ projects = [] }) => {
           </p>
         </div>
 
-        {/* Project Showcase List (Asymmetric Editorial Cards) */}
-        <div className="space-y-12">
-          {displayProjects.map((project, idx) => {
+        {/* Project Showcase List */}
+        {displayProjects.length === 0 ? (
+          <div className="p-12 rounded-3xl border border-dashed border-theme-border bg-theme-surface/50 text-center max-w-xl mx-auto space-y-4 shadow-subtle">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto border border-indigo-500/20">
+              <LuGithub className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-heading font-extrabold text-base text-theme-text">
+                Full-Stack Projects Showcase
+              </h3>
+              <p className="text-xs text-theme-textMuted max-w-md mx-auto leading-relaxed">
+                Praveen is currently updating production deployments. Live verified projects added via the Admin Console will appear here. In the meantime, explore codebases directly on GitHub.
+              </p>
+            </div>
+            <a
+              href="https://github.com/PraveenRaii"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-heading font-bold text-xs transition-all shadow-glowSm"
+            >
+              <LuGithub className="w-4 h-4" />
+              <span>Explore GitHub Repositories</span>
+              <LuExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {displayProjects.map((project, idx) => {
             const isReversed = idx % 2 === 1;
             const currentLikes =
               likesMap[project.id] !== undefined ? likesMap[project.id] : project.likesCount || 0;
@@ -475,6 +500,7 @@ const ProjectsSection = ({ projects = [] }) => {
             );
           })}
         </div>
+        )}
 
       </div>
     </section>

@@ -99,6 +99,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
+  // ONLY show real data from database
   const eduList =
     education && education.length > 0
       ? education.map((e) => ({
@@ -109,21 +110,21 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
           highlights: e.description ? [e.description] : [e.fieldOfStudy || 'Computer Science & Engineering'],
           status: e.endDate ? 'Graduated' : 'Active Student',
         }))
-      : fallbackEducation;
+      : [];
 
   const certList =
     certificates && certificates.length > 0
-      ? certificates.map((c, i) => ({
+      ? certificates.map((c) => ({
           title: c.title,
           issuer: c.issuer,
           issueDate: c.issueDate || 'Verified',
           credentialUrl: c.credentialUrl || '',
           skills: c.skills && c.skills.length > 0 ? c.skills : ['Full Stack', 'Software Engineering'],
           description: c.description || '',
-          imageUrl: getAssetUrl(c.image?.url) || fallbackCertificates[i % fallbackCertificates.length]?.imageUrl,
+          imageUrl: getAssetUrl(c.image?.url),
           type: c.type || 'Official Achievement Award',
         }))
-      : fallbackCertificates;
+      : [];
 
   // Filter categories
   const categories = ['All', 'Awards', 'Certifications', 'Hackathons'];
@@ -180,56 +181,62 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
               </h3>
             </div>
 
-            <div className="space-y-6 relative pl-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-theme-border">
-              {eduList.map((edu, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.35, delay: idx * 0.1 }}
-                  className="relative group"
-                >
-                  {/* Timeline Node */}
-                  <span className="absolute -left-[27px] top-1.5 w-3.5 h-3.5 rounded-full bg-theme-surface border-2 border-indigo-500 flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                  </span>
+            {eduList.length === 0 ? (
+              <div className="p-6 rounded-2xl border border-dashed border-theme-border bg-theme-surface/50 text-center text-xs text-theme-textMuted">
+                Academic records are being updated by Praveen.
+              </div>
+            ) : (
+              <div className="space-y-6 relative pl-6 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-theme-border">
+                {eduList.map((edu, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: idx * 0.1 }}
+                    className="relative group"
+                  >
+                    {/* Timeline Node */}
+                    <span className="absolute -left-[27px] top-1.5 w-3.5 h-3.5 rounded-full bg-theme-surface border-2 border-indigo-500 flex items-center justify-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                    </span>
 
-                  <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-colors shadow-subtle space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="font-mono text-xs px-2.5 py-0.5 rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold">
-                        {edu.period}
-                      </span>
-                      <span className="font-mono text-[11px] text-theme-textMuted uppercase font-semibold">
-                        {edu.status}
-                      </span>
+                    <div className="p-5 rounded-3xl border border-theme-border bg-theme-surface hover:border-indigo-500/40 transition-colors shadow-subtle space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="font-mono text-xs px-2.5 py-0.5 rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold">
+                          {edu.period}
+                        </span>
+                        <span className="font-mono text-[11px] text-theme-textMuted uppercase font-semibold">
+                          {edu.status}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h4 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
+                          {edu.degree}
+                        </h4>
+                        <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 mt-0.5 flex items-center gap-1.5">
+                          <LuBuilding2 className="w-3.5 h-3.5 shrink-0" />
+                          {edu.institution}
+                        </p>
+                      </div>
+
+                      <ul className="space-y-1.5 pt-2 border-t border-theme-border/60">
+                        {edu.highlights.map((item, hIdx) => (
+                          <li
+                            key={hIdx}
+                            className="text-xs text-theme-textMuted flex items-start gap-2 leading-relaxed"
+                          >
+                            <LuCircleCheck className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-
-                    <div>
-                      <h4 className="font-heading font-bold text-base text-theme-text group-hover:text-indigo-500 transition-colors">
-                        {edu.degree}
-                      </h4>
-                      <p className="text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 mt-0.5 flex items-center gap-1.5">
-                        <LuBuilding2 className="w-3.5 h-3.5 shrink-0" />
-                        {edu.institution}
-                      </p>
-                    </div>
-
-                    <ul className="space-y-1.5 pt-2 border-t border-theme-border/60">
-                      {edu.highlights.map((item, hIdx) => (
-                        <li
-                          key={hIdx}
-                          className="text-xs text-theme-textMuted flex items-start gap-2 leading-relaxed"
-                        >
-                          <LuCircleCheck className="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
 
             {/* Dedicated LeetCode Problem Solving Spotlight Card */}
             <div className="p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-theme-surface to-theme-surface shadow-subtle space-y-4">
@@ -314,8 +321,13 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
             </div>
 
             {/* Achievement Photo Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredCerts.map((cert, idx) => (
+            {filteredCerts.length === 0 ? (
+              <div className="p-8 rounded-2xl border border-dashed border-theme-border bg-theme-surface/50 text-center text-xs text-theme-textMuted">
+                No verified certificates or awards published in this category yet.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {filteredCerts.map((cert, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 12 }}
@@ -417,6 +429,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                 </motion.div>
               ))}
             </div>
+            )}
 
             {/* Continuous Learning Initiative Block */}
             <div className="p-4 rounded-2xl border border-theme-border bg-indigo-500/5 font-mono text-xs space-y-1.5 text-theme-text">

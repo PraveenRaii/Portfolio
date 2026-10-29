@@ -107,8 +107,8 @@ const HackathonsSection = ({ certificates = [] }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [activeTab, setActiveTab] = useState('All');
 
-  // Convert incoming certificates and prioritize newly uploaded items first
-  const userMoments = (certificates || []).map((c, i) => {
+  // ONLY show real data from database (no demo data)
+  const momentsList = (certificates || []).map((c) => {
     const typeLower = (c.type || '').toLowerCase();
     let category = 'Awards & Honors';
 
@@ -135,19 +135,12 @@ const HackathonsSection = ({ certificates = [] }) => {
       type: c.type || 'Achievement',
       description: c.description || '',
       skills: c.skills && c.skills.length > 0 ? c.skills : ['Teamwork', 'Software Engineering'],
-      imageUrl: getAssetUrl(c.image?.url) || fallbackMoments[i % fallbackMoments.length].imageUrl,
+      imageUrl: getAssetUrl(c.image?.url),
       credentialUrl: c.credentialUrl || '',
       highlights: c.highlights || '',
       isUserUploaded: true,
     };
   });
-
-  // Combine user-uploaded moments at the top, followed by fallback moments if total is under 6
-  const userTitles = new Set(userMoments.map((m) => m.title.toLowerCase().trim()));
-  const remainingFallbacks = fallbackMoments.filter(
-    (fb) => !userTitles.has(fb.title.toLowerCase().trim())
-  );
-  const momentsList = [...userMoments, ...remainingFallbacks];
 
   const categories = [
     'All',
@@ -227,8 +220,30 @@ const HackathonsSection = ({ certificates = [] }) => {
         </div>
 
         {/* Photo Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMoments.map((moment, idx) => (
+        {filteredMoments.length === 0 ? (
+          <div className="p-12 rounded-3xl border border-dashed border-theme-border bg-theme-surface/50 text-center max-w-xl mx-auto space-y-4 shadow-subtle">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/20">
+              <LuTrophy className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-heading font-extrabold text-base text-theme-text">
+                Hackathon &amp; Campus Photos
+              </h3>
+              <p className="text-xs text-theme-textMuted max-w-md mx-auto leading-relaxed">
+                Praveen is actively participating in developer hackathons and tech sprints. Real photos, awards, and moments added via the Admin Console will appear here.
+              </p>
+            </div>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-heading font-bold text-xs transition-all shadow-glowSm"
+            >
+              <LuSparkles className="w-3.5 h-3.5" />
+              <span>Connect for Upcoming Hackathons</span>
+            </a>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMoments.map((moment, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
@@ -345,6 +360,7 @@ const HackathonsSection = ({ certificates = [] }) => {
             </motion.div>
           ))}
         </div>
+        )}
 
         {/* Bottom Callout Banner */}
         <div className="mt-14 p-6 sm:p-8 rounded-3xl border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-cyan-500/10 flex flex-col sm:flex-row items-center justify-between gap-6">

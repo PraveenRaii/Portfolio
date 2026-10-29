@@ -106,7 +106,7 @@ const HeroSection = ({ profile }) => {
                 <span className="text-cyan-500">⚡</span> Java &bull; Spring Boot &bull; React
               </span>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-theme-border bg-theme-surface shadow-subtle text-xs font-mono text-theme-text font-medium">
-                <span className="text-emerald-500">📍</span> Lucknow, India
+                <span className="text-emerald-500">📍</span> {profile?.location || 'Lucknow, India'}
               </span>
               <a
                 href={profile?.socialLinks?.leetcode || 'https://leetcode.com/u/Praveen_913/'}

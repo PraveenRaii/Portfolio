@@ -5,6 +5,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { compressImageFile } from '../../utils/imageUrl';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -22,6 +23,7 @@ const AdminProjects = () => {
     tags: '',
     liveUrl: '',
     githubUrl: '',
+    imageUrl: '',
     order: 0,
     isFeatured: false,
   });
@@ -55,6 +57,7 @@ const AdminProjects = () => {
       tags: '',
       liveUrl: '',
       githubUrl: '',
+      imageUrl: '',
       order: projects.length + 1,
       isFeatured: false,
     });
@@ -72,6 +75,7 @@ const AdminProjects = () => {
       tags: Array.isArray(proj.tags) ? proj.tags.join(', ') : proj.tags,
       liveUrl: proj.liveUrl || '',
       githubUrl: proj.githubUrl || '',
+      imageUrl: proj.image?.url || '',
       order: proj.order || 0,
       isFeatured: proj.isFeatured || false,
     });
@@ -80,11 +84,18 @@ const AdminProjects = () => {
     setIsModalOpen(true);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      try {
+        const compressed = await compressImageFile(file, 1600, 1600, 0.85);
+        setImageFile(compressed);
+        setImagePreview(URL.createObjectURL(compressed));
+        toast.success(`Photo compressed (${(compressed.size / 1024).toFixed(0)} KB)`);
+      } catch {
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+      }
     }
   };
 
@@ -101,6 +112,9 @@ const AdminProjects = () => {
       data.append('githubUrl', formData.githubUrl);
       data.append('order', formData.order);
       data.append('isFeatured', formData.isFeatured);
+      if (formData.imageUrl && formData.imageUrl.trim() !== '') {
+        data.append('imageUrl', formData.imageUrl.trim());
+      }
       if (imageFile) {
         data.append('image', imageFile);
       }
@@ -374,16 +388,31 @@ const AdminProjects = () => {
           </div>
 
           {/* Project Image */}
-          <div>
+          <div className="space-y-2">
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Project Preview Cover (Cloudinary / Local)
+              Project Preview Cover Photo (File or URL)
             </label>
             <input
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="text-xs text-theme-textMuted font-mono"
+              className="text-xs text-theme-textMuted font-mono block w-full"
             />
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono text-theme-textMuted uppercase shrink-0">or URL:</span>
+              <input
+                type="url"
+                placeholder="https://..."
+                value={formData.imageUrl || ''}
+                onChange={(e) => {
+                  setFormData({ ...formData, imageUrl: e.target.value });
+                  if (e.target.value && !imageFile) {
+                    setImagePreview(e.target.value);
+                  }
+                }}
+                className="w-full px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
+              />
+            </div>
             {imagePreview && (
               <img
                 src={imagePreview}

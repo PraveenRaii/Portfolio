@@ -212,7 +212,7 @@ const seedDatabase = async () => {
         issueDate: '2024',
         credentialUrl: 'https://github.com/PraveenRaii',
         image: {
-          url: 'http://localhost:5000/uploads/achievement_cert.png',
+          url: '/uploads/achievement_cert.png',
           public_id: '',
         },
         order: 1,

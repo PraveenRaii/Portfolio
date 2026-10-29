@@ -14,6 +14,7 @@ import {
   LuImage,
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
+import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const fallbackEducation = [
   {
@@ -119,7 +120,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
           credentialUrl: c.credentialUrl || '',
           skills: c.skills && c.skills.length > 0 ? c.skills : ['Full Stack', 'Software Engineering'],
           description: c.description || '',
-          imageUrl: c.image?.url || fallbackCertificates[i % fallbackCertificates.length]?.imageUrl,
+          imageUrl: getAssetUrl(c.image?.url) || fallbackCertificates[i % fallbackCertificates.length]?.imageUrl,
           type: c.type || 'Official Achievement Award',
         }))
       : fallbackCertificates;
@@ -334,8 +335,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src =
-                          'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=80';
+                        e.target.src = '/achievements/achievement_cert.png';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex items-end justify-between p-3.5">
@@ -482,8 +482,7 @@ const ExperienceSection = ({ education = [], certificates = [] }) => {
                   className="max-h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-lg"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=80';
+                    e.target.src = '/achievements/achievement_cert.png';
                   }}
                 />
               </div>

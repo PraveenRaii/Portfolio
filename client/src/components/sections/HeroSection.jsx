@@ -16,7 +16,7 @@ import {
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
-import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME } from '../../utils/imageUrl';
+import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME, FALLBACK_AVATAR_DATA_URI } from '../../utils/imageUrl';
 
 const HeroSection = ({ profile }) => {
   const [activeCodeTab, setActiveCodeTab] = useState('controller');
@@ -326,8 +326,11 @@ const HeroSection = ({ profile }) => {
                         alt={profile?.name || 'Praveen Rai'}
                         className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-white/20 shadow-2xl"
                         onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = DEFAULT_AVATAR;
+                          if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                            e.target.src = DEFAULT_AVATAR;
+                          } else {
+                            e.target.src = FALLBACK_AVATAR_DATA_URI;
+                          }
                         }}
                       />
                       <span className="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 font-bold">

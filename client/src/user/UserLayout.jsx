@@ -14,10 +14,12 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '../components/common/ThemeToggle';
-import { getAssetUrl, DEFAULT_AVATAR } from '../utils/imageUrl';
+import { getAssetUrl, DEFAULT_AVATAR, FALLBACK_AVATAR_DATA_URI } from '../utils/imageUrl';
 
 const UserLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [mobileImgError, setMobileImgError] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -55,15 +57,26 @@ const UserLayout = () => {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <img
-            src={getAssetUrl(user?.avatar?.url)}
-            alt={user?.name}
-            className="w-8 h-8 rounded-full object-cover border border-indigo-500/40"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = DEFAULT_AVATAR;
-            }}
-          />
+          {!mobileImgError ? (
+            <img
+              src={getAssetUrl(user?.avatar?.url)}
+              alt={user?.name || 'User'}
+              className="w-8 h-8 rounded-full object-cover border border-indigo-500/40 shrink-0 bg-theme-surface"
+              onError={(e) => {
+                if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                  e.target.src = DEFAULT_AVATAR;
+                } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
+                  e.target.src = FALLBACK_AVATAR_DATA_URI;
+                } else {
+                  setMobileImgError(true);
+                }
+              }}
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 text-white flex items-center justify-center font-mono font-bold text-xs border border-cyan-500/40 shrink-0">
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'U'}
+            </div>
+          )}
         </div>
       </div>
 
@@ -104,15 +117,28 @@ const UserLayout = () => {
 
           {/* User Profile Snippet */}
           <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border flex items-center gap-3">
-            <img
-              src={getAssetUrl(user?.avatar?.url)}
-              alt={user?.name}
-              className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = DEFAULT_AVATAR;
-              }}
-            />
+            <div className="relative shrink-0">
+              {!imgError ? (
+                <img
+                  src={getAssetUrl(user?.avatar?.url)}
+                  alt={user?.name || 'User'}
+                  className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0 bg-theme-surface shadow-subtle"
+                  onError={(e) => {
+                    if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                      e.target.src = DEFAULT_AVATAR;
+                    } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
+                      e.target.src = FALLBACK_AVATAR_DATA_URI;
+                    } else {
+                      setImgError(true);
+                    }
+                  }}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-indigo-600 text-white flex items-center justify-center font-mono font-bold text-sm border border-cyan-500/40 shadow-glowSm shrink-0">
+                  {user?.name ? user.name.slice(0, 2).toUpperCase() : 'U'}
+                </div>
+              )}
+            </div>
             <div className="overflow-hidden">
               <p className="text-xs font-heading font-bold text-theme-text truncate">
                 {user?.name}

@@ -7,6 +7,7 @@ import AboutSection from '../components/sections/AboutSection';
 import ProjectsSection from '../components/sections/ProjectsSection';
 import SkillsSection from '../components/sections/SkillsSection';
 import ExperienceSection from '../components/sections/ExperienceSection';
+import HackathonsSection from '../components/sections/HackathonsSection';
 import TestimonialsSection from '../components/sections/TestimonialsSection';
 import ContactSection from '../components/sections/ContactSection';
 import { publicService } from '../services/publicService';
@@ -60,10 +61,13 @@ const HomePage = () => {
           certificates={data?.certificates}
         />
 
+        {/* 05 / Hackathons & Campus Life Moments Photo Showcase */}
+        <HackathonsSection certificates={data?.certificates} />
+
         {/* Endorsements / Testimonials */}
         <TestimonialsSection testimonials={data?.testimonials} />
 
-        {/* 05 / Contact & Direct Message */}
+        {/* 06 / Contact & Direct Message */}
         <ContactSection profile={data?.profile} />
       </main>
 

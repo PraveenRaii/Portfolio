@@ -20,11 +20,13 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/adminService';
 import ThemeToggle from '../components/common/ThemeToggle';
-import { getAssetUrl, DEFAULT_AVATAR } from '../utils/imageUrl';
+import { getAssetUrl, DEFAULT_AVATAR, FALLBACK_AVATAR_DATA_URI } from '../utils/imageUrl';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [sidebarImgError, setSidebarImgError] = useState(false);
+  const [mobileImgError, setMobileImgError] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -90,15 +92,26 @@ const AdminLayout = () => {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <img
-            src={avatarSrc}
-            alt="Admin"
-            className="w-8 h-8 rounded-full object-cover border border-indigo-500/40"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = DEFAULT_AVATAR;
-            }}
-          />
+          {!mobileImgError ? (
+            <img
+              src={avatarSrc}
+              alt={user?.name || 'Admin'}
+              className="w-8 h-8 rounded-full object-cover border border-indigo-500/40 shrink-0 bg-theme-surface"
+              onError={(e) => {
+                if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                  e.target.src = DEFAULT_AVATAR;
+                } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
+                  e.target.src = FALLBACK_AVATAR_DATA_URI;
+                } else {
+                  setMobileImgError(true);
+                }
+              }}
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-mono font-bold text-xs border border-indigo-500/40 shrink-0">
+              PR
+            </div>
+          )}
         </div>
       </div>
 
@@ -140,16 +153,27 @@ const AdminLayout = () => {
 
           {/* User Profile Card */}
           <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border flex items-center gap-3">
-            <div className="relative">
-              <img
-                src={avatarSrc}
-                alt="Admin"
-                className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = DEFAULT_AVATAR;
-                }}
-              />
+            <div className="relative shrink-0">
+              {!sidebarImgError ? (
+                <img
+                  src={avatarSrc}
+                  alt={user?.name || 'Praveen Rai'}
+                  className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0 bg-theme-surface shadow-subtle"
+                  onError={(e) => {
+                    if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                      e.target.src = DEFAULT_AVATAR;
+                    } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
+                      e.target.src = FALLBACK_AVATAR_DATA_URI;
+                    } else {
+                      setSidebarImgError(true);
+                    }
+                  }}
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-heading font-black text-sm shadow-glowSm border border-indigo-500/40 shrink-0">
+                  PR
+                </div>
+              )}
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-theme-surface" />
             </div>
             <div className="overflow-hidden flex-1">

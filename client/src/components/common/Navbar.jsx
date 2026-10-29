@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { publicService } from '../../services/publicService';
 import ThemeToggle from './ThemeToggle';
 import toast from 'react-hot-toast';
-import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME } from '../../utils/imageUrl';
+import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME, FALLBACK_AVATAR_DATA_URI } from '../../utils/imageUrl';
 
 const Navbar = ({ profile }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ const Navbar = ({ profile }) => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      const sections = ['home', 'about', 'projects', 'skills', 'experience', 'contact'];
+      const sections = ['home', 'about', 'projects', 'skills', 'experience', 'hackathons', 'contact'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -52,6 +52,7 @@ const Navbar = ({ profile }) => {
     { name: 'Projects', href: '#projects', id: 'projects' },
     { name: 'Skills', href: '#skills', id: 'skills' },
     { name: 'Journey', href: '#experience', id: 'experience' },
+    { name: 'Hackathons', href: '#hackathons', id: 'hackathons' },
     { name: 'Contact', href: '#contact', id: 'contact' },
   ];
 
@@ -93,8 +94,11 @@ const Navbar = ({ profile }) => {
                   alt={profile?.name || 'Praveen Rai'}
                   className="w-8 h-8 rounded-xl object-cover border border-theme-border group-hover:border-indigo-500 transition-colors shadow-subtle"
                   onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
+                    if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                      e.target.src = DEFAULT_AVATAR;
+                    } else {
+                      e.target.src = FALLBACK_AVATAR_DATA_URI;
+                    }
                   }}
                 />
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-theme-surface" />

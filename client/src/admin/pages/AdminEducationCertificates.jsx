@@ -17,11 +17,14 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { getAssetUrl, compressImageFile } from '../../utils/imageUrl';
 
 const achievementTypes = [
-  'Official Achievement Award',
-  'Academic Honor',
+  'Hackathon Attended',
+  'College Life & Campus',
   'Hackathon Award',
+  'Academic Honor',
+  'Official Achievement Award',
   'Professional Certification',
   'Coding Competition',
   'Special Recognition',
@@ -31,6 +34,7 @@ const AdminEducationCertificates = () => {
   const [activeTab, setActiveTab] = useState('achievements');
   const [educationList, setEducationList] = useState([]);
   const [certList, setCertList] = useState([]);
+  const [selectedAdminFilter, setSelectedAdminFilter] = useState('All');
   const [loading, setLoading] = useState(true);
 
   // Education modal state
@@ -178,15 +182,22 @@ const AdminEducationCertificates = () => {
       imageUrl: item.image?.url || '',
     });
     setCertFile(null);
-    setCertPreview(item.image?.url || '');
+    setCertPreview(getAssetUrl(item.image?.url) || '');
     setIsCertModalOpen(true);
   };
 
-  const handleCertFileChange = (e) => {
+  const handleCertFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setCertFile(file);
-      setCertPreview(URL.createObjectURL(file));
+      try {
+        const compressed = await compressImageFile(file, { maxWidth: 1600, quality: 0.85 });
+        setCertFile(compressed);
+        setCertPreview(URL.createObjectURL(compressed));
+        toast.success(`Photo compressed (${(compressed.size / 1024).toFixed(0)} KB)`);
+      } catch (err) {
+        setCertFile(file);
+        setCertPreview(URL.createObjectURL(file));
+      }
     }
   };
 
@@ -305,17 +316,55 @@ const AdminEducationCertificates = () => {
       ) : activeTab === 'achievements' ? (
         /* Achievements & Photos Grid */
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs font-mono text-theme-textMuted px-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono text-theme-textMuted px-1">
             <span>
-              Showing {certList.length} verified achievement credentials &bull; Click card to preview
+              Showing {certList.length} total credentials &bull; Photos appear in <strong>Section 04 (Journey)</strong> and <strong>Section 05 (Hackathons)</strong>
             </span>
-            <span className="text-indigo-500 font-semibold">
-              Live on Home Page Section 04
-            </span>
+
+            {/* Quick Filter Chips */}
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-theme-surface border border-theme-border self-start sm:self-auto">
+              {['All', 'Hackathons', 'College Life', 'Awards', 'Certificates'].map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedAdminFilter(cat)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold transition-all ${
+                    selectedAdminFilter === cat
+                      ? 'bg-indigo-600 text-white shadow-glowSm'
+                      : 'text-theme-textMuted hover:text-theme-text'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {certList.map((cert) => (
+            {certList
+              .filter((cert) => {
+                if (selectedAdminFilter === 'All') return true;
+                const t = (cert.type || '').toLowerCase();
+                if (selectedAdminFilter === 'Hackathons') {
+                  return t.includes('hackathon') || t.includes('competition');
+                }
+                if (selectedAdminFilter === 'College Life') {
+                  return (
+                    t.includes('college') ||
+                    t.includes('campus') ||
+                    t.includes('academic') ||
+                    t.includes('workshop')
+                  );
+                }
+                if (selectedAdminFilter === 'Awards') {
+                  return t.includes('award') || t.includes('honor') || t.includes('recognition');
+                }
+                if (selectedAdminFilter === 'Certificates') {
+                  return t.includes('cert');
+                }
+                return true;
+              })
+              .map((cert) => (
               <div
                 key={cert._id}
                 className="rounded-3xl border border-theme-border bg-theme-surface shadow-card hover:border-cyan-500/50 transition-all flex flex-col justify-between group overflow-hidden"
@@ -325,15 +374,14 @@ const AdminEducationCertificates = () => {
                   <div className="relative h-44 w-full overflow-hidden bg-theme-surfaceSecondary border-b border-theme-border group/img">
                     <img
                       src={
-                        cert.image?.url ||
-                        'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60'
+                        getAssetUrl(cert.image?.url) ||
+                        '/achievements/achievement_cert.png'
                       }
                       alt={cert.title}
                       className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src =
-                          'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60';
+                        e.target.src = '/achievements/achievement_cert.png';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end justify-between p-3.5">
@@ -658,8 +706,7 @@ const AdminEducationCertificates = () => {
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src =
-                        'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=60';
+                      e.target.src = '/achievements/achievement_cert.png';
                     }}
                   />
                 ) : (

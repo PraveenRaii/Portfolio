@@ -8,6 +8,13 @@ export const DEFAULT_AVATAR = '/profile.jpg';
 export const DEFAULT_RESUME = '/uploads/Praveen_Rai_Resume.pdf';
 
 /**
+ * Bulletproof inline SVG Data URI fallback
+ * Renders an instant high-resolution glowing monogram avatar if static files or network fail.
+ */
+export const FALLBACK_AVATAR_DATA_URI =
+  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%234f46e5"/><stop offset="100%" stop-color="%2306b6d4"/></linearGradient></defs><rect width="160" height="160" rx="36" fill="url(%23g)"/><text x="50%" y="54%" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="900" fill="%23ffffff" dominant-baseline="middle" text-anchor="middle">PR</text></svg>';
+
+/**
  * Resolves an asset URL so it works seamlessly on phone links, localhost, and production.
  * @param {string} url - Image or asset URL from database or state
  * @returns {string} Fully resolved, reachable URL
@@ -27,10 +34,12 @@ export const getAssetUrl = (url) => {
     return DEFAULT_AVATAR;
   }
 
-  // 2. Blob or Data URLs (e.g. from local file selection preview)
+  // 2. Blob or Data URLs (e.g. from local file selection preview or SVG data URI)
   if (cleanUrl.startsWith('blob:') || cleanUrl.startsWith('data:')) {
     return cleanUrl;
   }
+
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
 
   // 3. Determine backend base origin from VITE_API_URL or current host
   const apiUrl = import.meta.env.VITE_API_URL || '';
@@ -47,9 +56,20 @@ export const getAssetUrl = (url) => {
 
   // 4. Handle localhost:5000 or 127.0.0.1:5000 saved URLs
   if (cleanUrl.includes('localhost:5000') || cleanUrl.includes('127.0.0.1:5000')) {
-    // If deployed on cloud (Render/Vercel) and backendOrigin is available
+    // If deployed on cloud and backendOrigin is available
     if (backendOrigin && !backendOrigin.includes('localhost')) {
       return cleanUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1):5000/g, backendOrigin);
+    }
+
+    // On HTTPS cloud site without backend origin, never output http://localhost:5000 (blocks Mixed Content)
+    if (isHttps) {
+      if (cleanUrl.includes('1hk7ux') || cleanUrl.includes('avatar') || cleanUrl.includes('profile')) {
+        return DEFAULT_AVATAR;
+      }
+      if (cleanUrl.includes('/uploads/')) {
+        return cleanUrl.substring(cleanUrl.indexOf('/uploads/'));
+      }
+      return DEFAULT_AVATAR;
     }
 
     // If accessing via local network Wi-Fi on phone (e.g. http://192.168.1.5:5173)
@@ -67,6 +87,12 @@ export const getAssetUrl = (url) => {
     if (backendOrigin) {
       return `${backendOrigin}${cleanUrl}`;
     }
+    if (isHttps) {
+      if (cleanUrl.includes('1hk7ux') || cleanUrl.includes('avatar')) {
+        return DEFAULT_AVATAR;
+      }
+      return cleanUrl;
+    }
     if (
       typeof window !== 'undefined' &&
       window.location.hostname !== 'localhost' &&
@@ -74,6 +100,12 @@ export const getAssetUrl = (url) => {
     ) {
       return `http://${window.location.hostname}:5000${cleanUrl}`;
     }
+    return cleanUrl;
+  }
+
+  // 6. Upgrading HTTP images to HTTPS when the site is running on HTTPS (prevents Mixed Content)
+  if (isHttps && cleanUrl.startsWith('http://') && !cleanUrl.includes('localhost') && !cleanUrl.includes('127.0.0.1')) {
+    return cleanUrl.replace(/^http:\/\//i, 'https://');
   }
 
   return cleanUrl;
@@ -129,6 +161,8 @@ export const compressImageFile = (
         canvas.height = height;
 
         const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
@@ -136,8 +170,7 @@ export const compressImageFile = (
             if (!blob) {
               return resolve(file);
             }
-            const cleanName = (file.name || 'avatar.jpg').replace(/\.[^/.]+$/, '') + '.jpg';
-            const compressedFile = new File([blob], cleanName, {
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
               type: 'image/jpeg',
               lastModified: Date.now(),
             });

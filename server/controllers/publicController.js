@@ -36,14 +36,30 @@ const getPublicData = async (req, res, next) => {
       formattedProfile.resume.url = normalizeAssetUrl(formattedProfile.resume.url, req);
     }
 
+    const formattedCertificates = (certificates || []).map((c) => {
+      const obj = c.toObject ? c.toObject() : { ...c };
+      if (obj.image?.url) {
+        obj.image.url = normalizeAssetUrl(obj.image.url, req);
+      }
+      return obj;
+    });
+
+    const formattedProjects = (projects || []).map((p) => {
+      const obj = p.toObject ? p.toObject() : { ...p };
+      if (obj.coverImage?.url) {
+        obj.coverImage.url = normalizeAssetUrl(obj.coverImage.url, req);
+      }
+      return obj;
+    });
+
     res.status(200).json({
       success: true,
       data: {
         profile: formattedProfile,
-        projects: projects || [],
+        projects: formattedProjects,
         skills: skills || [],
         education: education || [],
-        certificates: certificates || [],
+        certificates: formattedCertificates,
         testimonials: testimonials || [],
       },
     });

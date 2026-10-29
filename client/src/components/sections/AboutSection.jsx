@@ -11,7 +11,7 @@ import {
   LuSparkles,
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
-import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
+import { getAssetUrl, DEFAULT_AVATAR, FALLBACK_AVATAR_DATA_URI } from '../../utils/imageUrl';
 
 const AboutSection = ({ profile }) => {
   const avatarSrc = getAssetUrl(profile?.avatar?.url);
@@ -77,8 +77,11 @@ const AboutSection = ({ profile }) => {
                     alt={profile?.name || 'Praveen Rai'}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = DEFAULT_AVATAR;
+                      if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
+                        e.target.src = DEFAULT_AVATAR;
+                      } else {
+                        e.target.src = FALLBACK_AVATAR_DATA_URI;
+                      }
                     }}
                   />
                   {/* Subtle Gradient Vignette */}

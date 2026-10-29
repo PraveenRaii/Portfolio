@@ -15,7 +15,7 @@ import {
   FiX,
   FiCode,
   FiUsers,
-  FiFlame,
+  FiZap,
 } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 import { publicService } from '../../services/publicService';
@@ -230,7 +230,7 @@ const AdminHackathons = () => {
         <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative space-y-1.5 z-10">
           <div className="flex items-center gap-2 text-amber-500 font-mono text-xs uppercase tracking-widestTechnical font-semibold">
-            <FiFlame className="w-4 h-4 text-amber-500 animate-pulse" />
+            <FiZap className="w-4 h-4 text-amber-500 animate-pulse" />
             <span>PORTFOLIO SECTION 05 SHOWCASE</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span className="text-emerald-500 font-bold">PERMANENT STORAGE</span>
@@ -279,7 +279,7 @@ const AdminHackathons = () => {
 
         <div className="p-4 rounded-2xl bg-theme-surface border border-theme-border flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center shrink-0">
-            <FiFlame className="w-5 h-5" />
+            <FiZap className="w-5 h-5" />
           </div>
           <div>
             <p className="text-[11px] font-mono uppercase text-theme-textMuted">Hackathons</p>

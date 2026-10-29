@@ -112,7 +112,7 @@ const AdminDashboard = () => {
         {/* Quick Action Buttons */}
         <div className="relative z-10 flex flex-wrap items-center gap-2.5">
           <Link
-            to="/admin/experience?type=hackathon"
+            to="/admin/hackathons"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-500 text-white font-heading font-bold text-xs shadow-glowSm transition-all"
           >
             <FiAward className="w-4 h-4" />
@@ -157,7 +157,7 @@ const AdminDashboard = () => {
         </div>
 
         <Link
-          to="/admin/experience?type=hackathon"
+          to="/admin/hackathons"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs shadow-glowSm transition-all shrink-0 self-start sm:self-auto"
         >
           <FiPlus className="w-4 h-4" />

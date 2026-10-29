@@ -107,42 +107,47 @@ const HackathonsSection = ({ certificates = [] }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [activeTab, setActiveTab] = useState('All');
 
-  // Convert incoming certificates or fall back to curated real items
-  const momentsList =
-    certificates && certificates.length > 0
-      ? certificates.map((c, i) => {
-          const typeLower = (c.type || '').toLowerCase();
-          let category = 'Awards & Honors';
+  // Convert incoming certificates and prioritize newly uploaded items first
+  const userMoments = (certificates || []).map((c, i) => {
+    const typeLower = (c.type || '').toLowerCase();
+    let category = 'Awards & Honors';
 
-          if (
-            typeLower.includes('hackathon attended') ||
-            typeLower.includes('hackathon') ||
-            typeLower.includes('competition')
-          ) {
-            category = 'Hackathons Attended';
-          } else if (
-            typeLower.includes('college') ||
-            typeLower.includes('campus') ||
-            typeLower.includes('workshop') ||
-            typeLower.includes('academic')
-          ) {
-            category = 'College Life & Campus';
-          }
+    if (
+      typeLower.includes('hackathon attended') ||
+      typeLower.includes('hackathon') ||
+      typeLower.includes('competition')
+    ) {
+      category = 'Hackathons Attended';
+    } else if (
+      typeLower.includes('college') ||
+      typeLower.includes('campus') ||
+      typeLower.includes('workshop') ||
+      typeLower.includes('academic')
+    ) {
+      category = 'College Life & Campus';
+    }
 
-          return {
-            title: c.title,
-            issuer: c.issuer,
-            issueDate: c.issueDate || '2024',
-            category,
-            type: c.type || 'Achievement',
-            description: c.description || '',
-            skills: c.skills && c.skills.length > 0 ? c.skills : ['Teamwork', 'Software Engineering'],
-            imageUrl: getAssetUrl(c.image?.url) || fallbackMoments[i % fallbackMoments.length].imageUrl,
-            credentialUrl: c.credentialUrl || '',
-            highlights: c.highlights || '',
-          };
-        })
-      : fallbackMoments;
+    return {
+      title: c.title,
+      issuer: c.issuer,
+      issueDate: c.issueDate || '2024',
+      category,
+      type: c.type || 'Achievement',
+      description: c.description || '',
+      skills: c.skills && c.skills.length > 0 ? c.skills : ['Teamwork', 'Software Engineering'],
+      imageUrl: getAssetUrl(c.image?.url) || fallbackMoments[i % fallbackMoments.length].imageUrl,
+      credentialUrl: c.credentialUrl || '',
+      highlights: c.highlights || '',
+      isUserUploaded: true,
+    };
+  });
+
+  // Combine user-uploaded moments at the top, followed by fallback moments if total is under 6
+  const userTitles = new Set(userMoments.map((m) => m.title.toLowerCase().trim()));
+  const remainingFallbacks = fallbackMoments.filter(
+    (fb) => !userTitles.has(fb.title.toLowerCase().trim())
+  );
+  const momentsList = [...userMoments, ...remainingFallbacks];
 
   const categories = [
     'All',
@@ -243,7 +248,8 @@ const HackathonsSection = ({ certificates = [] }) => {
                   className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-108"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80';
                   }}
                 />
 
@@ -405,7 +411,8 @@ const HackathonsSection = ({ certificates = [] }) => {
                   className="max-h-[60vh] w-auto max-w-full object-contain mx-auto"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop&q=80';
                   }}
                 />
               </div>

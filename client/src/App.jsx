@@ -25,6 +25,7 @@ import AdminLayout from './admin/AdminLayout';
 import AdminDashboard from './admin/pages/AdminDashboard';
 import AdminProjects from './admin/pages/AdminProjects';
 import AdminSkills from './admin/pages/AdminSkills';
+import AdminHackathons from './admin/pages/AdminHackathons';
 import AdminEducationCertificates from './admin/pages/AdminEducationCertificates';
 import AdminUsers from './admin/pages/AdminUsers';
 import AdminTestimonials from './admin/pages/AdminTestimonials';
@@ -87,6 +88,7 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="projects" element={<AdminProjects />} />
               <Route path="skills" element={<AdminSkills />} />
+              <Route path="hackathons" element={<AdminHackathons />} />
               <Route path="experience" element={<AdminEducationCertificates />} />
               <Route path="users" element={<AdminUsers />} />
               <Route path="testimonials" element={<AdminTestimonials />} />

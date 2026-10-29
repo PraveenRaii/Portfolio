@@ -19,18 +19,35 @@ const uploadToCloudinary = (buffer, options = {}, req = null) => {
   return new Promise((resolve) => {
     let handled = false;
 
-    // Resilient local file fallback
+    // Resilient local file & Base64 Data URI fallback
     const fallbackToLocal = (reason) => {
       if (handled) return;
       handled = true;
       try {
         const isPdf = options.resource_type === 'raw';
-        const ext = isPdf ? '.pdf' : '.jpg';
+
+        // 1. Detect image mime type from buffer magic bytes for clean Base64 data URI
+        let mimeType = 'image/jpeg';
+        if (isPdf || (buffer.length > 4 && buffer.slice(0, 4).toString() === '%PDF')) {
+          mimeType = 'application/pdf';
+        } else if (buffer.length > 3 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) {
+          mimeType = 'image/png';
+        } else if (buffer.length > 3 && buffer.slice(0, 4).toString() === 'RIFF' && buffer.slice(8, 12).toString() === 'WEBP') {
+          mimeType = 'image/webp';
+        } else if (buffer.length > 2 && buffer.slice(0, 3).toString() === 'GIF') {
+          mimeType = 'image/gif';
+        }
+
+        const ext = isPdf ? '.pdf' : mimeType === 'image/png' ? '.png' : mimeType === 'image/webp' ? '.webp' : '.jpg';
         const filename = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}${ext}`;
         const filePath = path.join(uploadsDir, filename);
 
-        fs.writeFileSync(filePath, buffer);
-        console.warn(`[Storage Fallback Activated]: File saved locally to /uploads/${filename} (${reason})`);
+        // Also save to local uploads dir as secondary copy
+        try {
+          fs.writeFileSync(filePath, buffer);
+        } catch (writeErr) {
+          console.warn('[Storage Local Write Notice]:', writeErr.message);
+        }
 
         const port = process.env.PORT || 5000;
         let host = process.env.BACKEND_URL;
@@ -45,11 +62,20 @@ const uploadToCloudinary = (buffer, options = {}, req = null) => {
           host = `http://localhost:${port}`;
         }
 
+        // PERMANENT STORAGE FIX:
+        // Render free-tier dynos have ephemeral disks that wipe /uploads/ on sleep/restart.
+        // For images, we provide a Base64 Data URI directly in secure_url and url.
+        // Stored in MongoDB Atlas, this data URI NEVER expires, NEVER 404s, and survives all restarts permanently!
+        const isImage = !isPdf && mimeType !== 'application/pdf';
+        const dataUri = isImage ? `data:${mimeType};base64,${buffer.toString('base64')}` : `${host}/uploads/${filename}`;
+
+        console.warn(`[Storage Fallback Activated]: File stored permanently as ${isImage ? 'Base64 Data URI' : '/uploads/' + filename} (${reason})`);
+
         resolve({
-          secure_url: `${host}/uploads/${filename}`,
-          url: `${host}/uploads/${filename}`,
+          secure_url: dataUri,
+          url: dataUri,
           relative_url: `/uploads/${filename}`,
-          public_id: `local_${filename}`,
+          public_id: `b64_${Date.now()}_${filename}`,
         });
       } catch (err) {
         console.error('[Storage Fallback Error]:', err);
@@ -104,6 +130,9 @@ const uploadToCloudinary = (buffer, options = {}, req = null) => {
 const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
   if (!publicId) return null;
   try {
+    if (publicId.startsWith('b64_')) {
+      return { result: 'ok' };
+    }
     if (publicId.startsWith('local_')) {
       const filename = publicId.replace('local_', '');
       const filePath = path.join(uploadsDir, filename);

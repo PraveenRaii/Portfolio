@@ -64,7 +64,8 @@ const AdminLayout = () => {
     { name: 'Dashboard', path: '/admin', icon: FiGrid, exact: true, tag: 'Live' },
     { name: 'Projects', path: '/admin/projects', icon: FiFolder },
     { name: 'Skills & Tech', path: '/admin/skills', icon: FiCpu },
-    { name: 'Hackathons & Photos', path: '/admin/experience', icon: FiAward, tag: 'New' },
+    { name: 'Hackathon Photos', path: '/admin/hackathons', icon: FiAward, tag: 'Section 05' },
+    { name: 'Achievements & Edu', path: '/admin/experience', icon: FiBookOpen },
     { name: 'Users Manager', path: '/admin/users', icon: FiUsers },
     { name: 'Testimonials', path: '/admin/testimonials', icon: FiCheckSquare },
     { name: 'Messages Inbox', path: '/admin/messages', icon: FiMail },
@@ -92,20 +93,12 @@ const AdminLayout = () => {
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {!mobileImgError ? (
+          {!mobileImgError && avatarSrc ? (
             <img
               src={avatarSrc}
               alt={user?.name || 'Admin'}
               className="w-8 h-8 rounded-full object-cover border border-indigo-500/40 shrink-0 bg-theme-surface"
-              onError={(e) => {
-                if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
-                  e.target.src = DEFAULT_AVATAR;
-                } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
-                  e.target.src = FALLBACK_AVATAR_DATA_URI;
-                } else {
-                  setMobileImgError(true);
-                }
-              }}
+              onError={() => setMobileImgError(true)}
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-mono font-bold text-xs border border-indigo-500/40 shrink-0">
@@ -154,20 +147,12 @@ const AdminLayout = () => {
           {/* User Profile Card */}
           <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border flex items-center gap-3">
             <div className="relative shrink-0">
-              {!sidebarImgError ? (
+              {!sidebarImgError && avatarSrc ? (
                 <img
                   src={avatarSrc}
                   alt={user?.name || 'Praveen Rai'}
                   className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0 bg-theme-surface shadow-subtle"
-                  onError={(e) => {
-                    if (e.target.src !== DEFAULT_AVATAR && !e.target.src.includes('profile.jpg')) {
-                      e.target.src = DEFAULT_AVATAR;
-                    } else if (e.target.src !== FALLBACK_AVATAR_DATA_URI) {
-                      e.target.src = FALLBACK_AVATAR_DATA_URI;
-                    } else {
-                      setSidebarImgError(true);
-                    }
-                  }}
+                  onError={() => setSidebarImgError(true)}
                 />
               ) : (
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-heading font-black text-sm shadow-glowSm border border-indigo-500/40 shrink-0">

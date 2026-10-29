@@ -85,6 +85,10 @@ const AdminEducationCertificates = () => {
 
   useEffect(() => {
     fetchData();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('type') === 'hackathon') {
+      openAddHackathon();
+    }
   }, []);
 
   // Education Handlers
@@ -149,6 +153,24 @@ const AdminEducationCertificates = () => {
     } catch (err) {
       toast.error(err.message || 'Failed to delete');
     }
+  };
+
+  // Dedicated Hackathon Photo Upload Handler
+  const openAddHackathon = () => {
+    setEditingCertId(null);
+    setCertForm({
+      title: '',
+      issuer: 'SRMU Lucknow / Sunstone',
+      issueDate: '2024',
+      type: 'Hackathon Attended',
+      description: '',
+      skills: 'React, Node.js, Rapid Prototyping, Team Lead',
+      credentialUrl: '',
+      imageUrl: '',
+    });
+    setCertFile(null);
+    setCertPreview('');
+    setIsCertModalOpen(true);
   };
 
   // Achievement / Certificate Handlers
@@ -269,13 +291,23 @@ const AdminEducationCertificates = () => {
           </p>
         </div>
 
-        <div>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Button
+            variant="primary"
+            size="md"
+            icon={FiPlus}
+            onClick={openAddHackathon}
+            className="bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-500 text-white shadow-glowSm"
+          >
+            Upload Hackathon Photo
+          </Button>
+
           {activeTab === 'achievements' ? (
-            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddCert}>
-              Add Achievement Photo
+            <Button variant="secondary" size="md" icon={FiPlus} onClick={openAddCert}>
+              Add Other Photo / Award
             </Button>
           ) : (
-            <Button variant="primary" size="md" icon={FiPlus} onClick={openAddEdu}>
+            <Button variant="secondary" size="md" icon={FiPlus} onClick={openAddEdu}>
               Add Education
             </Button>
           )}
@@ -612,19 +644,36 @@ const AdminEducationCertificates = () => {
       <Modal
         isOpen={isCertModalOpen}
         onClose={() => setIsCertModalOpen(false)}
-        title={editingCertId ? 'Edit Achievement Photo & Details' : 'Add Achievement Photo & Credential'}
+        title={
+          editingCertId
+            ? 'Edit Photo & Details'
+            : certForm.type === 'Hackathon Attended'
+            ? 'Upload Hackathon Photo & Details'
+            : 'Add Achievement Photo & Credential'
+        }
       >
         <form onSubmit={handleCertSubmit} className="space-y-4">
+          {certForm.type === 'Hackathon Attended' && (
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-2.5 text-xs text-amber-600 dark:text-amber-400 font-mono">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span>Hackathon Mode: Automatically showcases in Section 05 (#hackathons) on the public site.</span>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text mb-1.5">
-              Achievement Title *
+              {certForm.type === 'Hackathon Attended' ? 'Hackathon / Event Name *' : 'Achievement Title *'}
             </label>
             <input
               type="text"
               value={certForm.title}
               onChange={(e) => setCertForm({ ...certForm, title: e.target.value })}
               required
-              placeholder="e.g. Academic Excellence Award / Hackathon 1st Place / MERN Certification"
+              placeholder={
+                certForm.type === 'Hackathon Attended'
+                  ? 'e.g. SRMU Tech Summit 2024 / Smart India Hackathon / SIH Sprint'
+                  : 'e.g. Academic Excellence Award / Hackathon 1st Place / MERN Certification'
+              }
               className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
             />
           </div>
@@ -694,7 +743,9 @@ const AdminEducationCertificates = () => {
           {/* Achievement Photo Upload & Live Preview */}
           <div className="p-4 rounded-2xl border border-theme-border bg-theme-surfaceSecondary space-y-3">
             <label className="block text-xs font-mono font-semibold uppercase tracking-wider text-theme-text">
-              Achievement Photo Upload
+              {certForm.type === 'Hackathon Attended'
+                ? 'Hackathon Photo Upload (Camera or File)'
+                : 'Achievement Photo Upload'}
             </label>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -759,7 +810,7 @@ const AdminEducationCertificates = () => {
               Cancel
             </Button>
             <Button variant="primary" size="md" type="submit" isLoading={submitting}>
-              Save Achievement Photo
+              {certForm.type === 'Hackathon Attended' ? 'Save Hackathon Photo' : 'Save Achievement Photo'}
             </Button>
           </div>
         </form>

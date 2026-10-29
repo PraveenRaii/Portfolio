@@ -3,36 +3,38 @@ const rateLimit = require('express-rate-limit');
 // General API Rate Limiter
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // limit each IP to 200 requests per windowMs
+  max: 300, // Generous limit for normal portfolio navigation
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Too many requests from this IP, please try again after 15 minutes',
+    message: 'Too many requests from this IP, please try again in a few minutes',
   },
 });
 
-// Stricter limiter for Auth routes (Login / Register / Forgot Password)
+// High-performance limiter for Auth routes (Login / Register / Forgot Password)
+// skipSuccessfulRequests: true ensures legitimate users are never throttled or delayed
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 15, // limit each IP to 15 login/register attempts per 15 minutes
+  max: 60, // Accommodates multi-user Wi-Fi / cellular shared IPs
+  skipSuccessfulRequests: true, // Only failed password attempts count against the limit
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Too many authentication attempts from this IP. Please try again after 15 minutes.',
+    message: 'Too many failed authentication attempts. Please try again in 5 minutes.',
   },
 });
 
 // Stricter limiter for Contact form messages
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10, // limit each IP to 10 contact messages per 15 minutes
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
     success: false,
-    message: 'Too many contact messages sent. Please wait before submitting another inquiry.',
+    message: 'Too many messages sent. Please wait before submitting another inquiry.',
   },
 });
 

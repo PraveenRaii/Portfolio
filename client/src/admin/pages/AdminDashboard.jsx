@@ -112,6 +112,13 @@ const AdminDashboard = () => {
         {/* Quick Action Buttons */}
         <div className="relative z-10 flex flex-wrap items-center gap-2.5">
           <Link
+            to="/admin/experience?type=hackathon"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-500 text-white font-heading font-bold text-xs shadow-glowSm transition-all"
+          >
+            <FiAward className="w-4 h-4" />
+            <span>Upload Hackathon Photo</span>
+          </Link>
+          <Link
             to="/admin/projects"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-heading font-bold text-xs shadow-glowSm transition-all"
           >
@@ -126,6 +133,36 @@ const AdminDashboard = () => {
             <span>Review Inbox</span>
           </Link>
         </div>
+      </div>
+
+      {/* Dedicated Hackathon & Campus Photos Spotlight Card */}
+      <div className="p-5 sm:p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-theme-surface to-indigo-500/10 shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center justify-center shrink-0">
+            <FiAward className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-heading font-extrabold text-base text-theme-text">
+                Hackathons &amp; Campus Photo Showcase
+              </h3>
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-bold">
+                Section 05 Live
+              </span>
+            </div>
+            <p className="text-xs text-theme-textMuted mt-0.5">
+              Upload hackathon sprint photos, college moments, and project presentations with instant smartphone photo compression and live public preview.
+            </p>
+          </div>
+        </div>
+
+        <Link
+          to="/admin/experience?type=hackathon"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs shadow-glowSm transition-all shrink-0 self-start sm:self-auto"
+        >
+          <FiPlus className="w-4 h-4" />
+          <span>Upload Hackathon Photo</span>
+        </Link>
       </div>
 
       {/* Counter Stat Cards */}

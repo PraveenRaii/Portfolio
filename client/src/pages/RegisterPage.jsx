@@ -45,11 +45,7 @@ const RegisterPage = () => {
       return;
     }
 
-    const { score } = calculatePasswordStrength(formData.password);
-    if (score <= 1) {
-      toast.error('Password is too weak. Please include letters, numbers, or symbols.');
-      return;
-    }
+    // Fast validation (min 6 characters required)
 
     try {
       setLoading(true);

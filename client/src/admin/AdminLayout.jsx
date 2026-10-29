@@ -64,7 +64,7 @@ const AdminLayout = () => {
     { name: 'Dashboard', path: '/admin', icon: FiGrid, exact: true, tag: 'Live' },
     { name: 'Projects', path: '/admin/projects', icon: FiFolder },
     { name: 'Skills & Tech', path: '/admin/skills', icon: FiCpu },
-    { name: 'Achievements & Photos', path: '/admin/experience', icon: FiAward },
+    { name: 'Hackathons & Photos', path: '/admin/experience', icon: FiAward, tag: 'New' },
     { name: 'Users Manager', path: '/admin/users', icon: FiUsers },
     { name: 'Testimonials', path: '/admin/testimonials', icon: FiCheckSquare },
     { name: 'Messages Inbox', path: '/admin/messages', icon: FiMail },

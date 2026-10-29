@@ -47,6 +47,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', res.token);
       }
       setUser(res.user);
+      setLoading(false);
       toast.success(res.message || `Welcome back, ${res.user.name}!`);
       return res.user;
     }
@@ -60,6 +61,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', res.token);
       }
       setUser(res.user);
+      setLoading(false);
       toast.success(res.message || 'Registration successful!');
       return res.user;
     }

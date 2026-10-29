@@ -31,7 +31,12 @@ api.interceptors.response.use(
       'An unexpected error occurred. Please try again.';
 
     // If session expired or unauthorized, emit custom event or allow callers to handle
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 &&
+      !error.config?.url?.includes('/auth/login') &&
+      !error.config?.url?.includes('/auth/register') &&
+      !error.config?.url?.includes('/public')
+    ) {
       // Event can be captured by AuthContext for auto-logout
       window.dispatchEvent(new CustomEvent('auth:unauthorized'));
     }

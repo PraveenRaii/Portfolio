@@ -6,7 +6,7 @@ const sendEmail = require('../utils/sendEmail');
 const { normalizeAssetUrl } = require('../utils/urlHelper');
 
 // Helper to generate token and send httpOnly cookie
-const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
+const sendTokenResponse = (user, statusCode, res, message = 'Success', req = null) => {
   const token = jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
@@ -51,7 +51,8 @@ const register = async (req, res, next) => {
   try {
     const { name, email, password, collegeOrCompany } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const existingUser = await User.exists({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -69,7 +70,7 @@ const register = async (req, res, next) => {
       isBlocked: false,
     });
 
-    sendTokenResponse(user, 201, res, 'Registration successful! Welcome to the portfolio platform.');
+    sendTokenResponse(user, 201, res, 'Registration successful! Welcome to the portfolio platform.', req);
   } catch (error) {
     next(error);
   }
@@ -85,7 +86,8 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Explicitly select password field
-    const user = await User.findOne({ email }).select('+password');
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const user = await User.findOne({ email: cleanEmail }).select('+password');
 
     if (!user) {
       return res.status(401).json({
@@ -110,7 +112,7 @@ const login = async (req, res, next) => {
       });
     }
 
-    sendTokenResponse(user, 200, res, `Login successful. Welcome back, ${user.name}!`);
+    sendTokenResponse(user, 200, res, `Login successful. Welcome back, ${user.name}!`, req);
   } catch (error) {
     next(error);
   }
@@ -129,7 +131,10 @@ const getMe = async (req, res, next) => {
     }
 
     // Keep admin avatar synchronized with Profile avatar
-    if (user.role === 'admin') {
+    if (user.role === 'admin' && (!user.avatar?.url || user.avatar.url.includes('default-avatar'))) {
+      Profile.findOne().select('avatar').then((p) => { if (p?.avatar?.url) User.findByIdAndUpdate(user._id, { avatar: p.avatar }).catch(() => {}); }).catch(() => {});
+    }
+    if (false) {
       const profile = await Profile.findOne();
       if (profile && profile.avatar?.url) {
         const isDefault =

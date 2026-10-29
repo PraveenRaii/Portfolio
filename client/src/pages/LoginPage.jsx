@@ -51,7 +51,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       const user = await login(formData);
-      toast.success(`Authenticated as ${user.role.toUpperCase()}: Welcome ${user.name}!`);
+      // Instant redirect based on authenticated role
 
       // Redirect based on returned authenticated role
       const destination =

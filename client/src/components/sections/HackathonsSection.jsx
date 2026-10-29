@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LuTrophy,
-  LuCode2,
+  LuCode,
   LuUsers,
   LuCalendar,
   LuMapPin,
@@ -12,7 +12,7 @@ import {
   LuSparkles,
   LuBuilding2,
   LuFlame,
-  LuCheckCircle2,
+  LuCircleCheck,
 } from 'react-icons/lu';
 import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
@@ -329,7 +329,7 @@ const HackathonsSection = ({ certificates = [] }) => {
                       </a>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-emerald-500 font-semibold text-[11px]">
-                        <LuCheckCircle2 className="w-3.5 h-3.5" />
+                        <LuCircleCheck className="w-3.5 h-3.5" />
                         <span>Verified Event</span>
                       </span>
                     )}

@@ -3,6 +3,7 @@ import { FiSearch, FiSlash, FiCheck, FiTrash2, FiUsers, FiShield } from 'react-i
 import { adminService } from '../../services/adminService';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
+import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -113,9 +114,13 @@ const AdminUsers = () => {
                   <tr key={u._id} className="hover:bg-theme-surfaceSecondary/50 transition-colors">
                     <td className="p-4 flex items-center gap-3">
                       <img
-                        src={u.avatar?.url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'}
+                        src={getAssetUrl(u.avatar?.url)}
                         alt={u.name}
                         className="w-9 h-9 rounded-xl object-cover border border-theme-border"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = DEFAULT_AVATAR;
+                        }}
                       />
                       <div>
                         <p className="font-heading font-bold text-theme-text">

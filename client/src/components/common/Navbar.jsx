@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { publicService } from '../../services/publicService';
 import ThemeToggle from './ThemeToggle';
 import toast from 'react-hot-toast';
+import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME } from '../../utils/imageUrl';
 
 const Navbar = ({ profile }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,9 +16,7 @@ const Navbar = ({ profile }) => {
   const { role, isAuthenticated } = useAuth();
   const location = useLocation();
 
-  const avatarSrc =
-    profile?.avatar?.url ||
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+  const avatarSrc = getAssetUrl(profile?.avatar?.url);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,14 +59,12 @@ const Navbar = ({ profile }) => {
     try {
       setDownloading(true);
       const res = await publicService.getResumeDownload();
-      if (res && res.url) {
-        window.open(res.url, '_blank', 'noopener,noreferrer');
-        toast.success('Resume PDF opened');
-      } else {
-        window.open('http://localhost:5000/uploads/Praveen_Rai_Resume.pdf', '_blank', 'noopener,noreferrer');
-      }
+      const resumeUrl = getAssetUrl(res?.url || profile?.resume?.url) || DEFAULT_RESUME;
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+      toast.success('Resume PDF opened');
     } catch (err) {
-      window.open('http://localhost:5000/uploads/Praveen_Rai_Resume.pdf', '_blank', 'noopener,noreferrer');
+      const fallbackUrl = getAssetUrl(profile?.resume?.url) || DEFAULT_RESUME;
+      window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
     } finally {
       setDownloading(false);
     }
@@ -97,8 +94,7 @@ const Navbar = ({ profile }) => {
                   className="w-8 h-8 rounded-xl object-cover border border-theme-border group-hover:border-indigo-500 transition-colors shadow-subtle"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                    e.target.src = DEFAULT_AVATAR;
                   }}
                 />
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-theme-surface" />
@@ -197,8 +193,7 @@ const Navbar = ({ profile }) => {
               className="w-10 h-10 rounded-xl object-cover border border-indigo-500/40"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src =
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                e.target.src = DEFAULT_AVATAR;
               }}
             />
             <div className="min-w-0">

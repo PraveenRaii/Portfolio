@@ -14,6 +14,7 @@ import Button from '../../components/common/Button';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME, compressImageFile } from '../../utils/imageUrl';
 
 const AdminSettings = () => {
   const { refreshUser } = useAuth();
@@ -80,11 +81,48 @@ const AdminSettings = () => {
     fetchProfile();
   }, []);
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
+      try {
+        const compressed = await compressImageFile(file);
+        setAvatarFile(compressed);
+        setAvatarPreview(URL.createObjectURL(compressed));
+        toast.success(`Photo selected (${(compressed.size / 1024).toFixed(0)} KB)! Click "Save Photo Now" to apply.`);
+      } catch {
+        setAvatarFile(file);
+        setAvatarPreview(URL.createObjectURL(file));
+      }
+    }
+  };
+
+  const handleDirectAvatarSave = async () => {
+    if (!avatarFile && (!formData.avatarUrl || formData.avatarUrl === profile?.avatar?.url)) {
+      toast.error('Please choose a photo file or enter an image URL.');
+      return;
+    }
+    try {
+      setUpdatingProfile(true);
+      const data = new FormData();
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+      if (avatarFile) {
+        data.append('avatar', avatarFile);
+      }
+      const res = await adminService.updateProfile(data);
+      if (res.success) {
+        toast.success('Profile photo updated successfully!');
+        setAvatarFile(null);
+        await fetchProfile();
+        if (refreshUser) {
+          await refreshUser();
+        }
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to update profile photo');
+    } finally {
+      setUpdatingProfile(false);
     }
   };
 
@@ -103,6 +141,7 @@ const AdminSettings = () => {
       const res = await adminService.updateProfile(data);
       if (res.success) {
         toast.success(res.message);
+        setAvatarFile(null);
         await fetchProfile();
         if (refreshUser) {
           await refreshUser();
@@ -186,7 +225,7 @@ const AdminSettings = () => {
           </div>
 
           <a
-            href={profile?.resume?.url || 'http://localhost:5000/uploads/Praveen_Rai_Resume.pdf'}
+            href={getAssetUrl(profile?.resume?.url) || DEFAULT_RESUME}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-mono font-bold transition-all shadow-glowSm"
@@ -246,16 +285,12 @@ const AdminSettings = () => {
             <div className="flex items-center gap-4">
               <div className="relative group shrink-0">
                 <img
-                  src={
-                    avatarPreview ||
-                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'
-                  }
+                  src={getAssetUrl(avatarPreview || formData.avatarUrl || profile?.avatar?.url)}
                   alt="Avatar"
                   className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/50 shadow-md group-hover:scale-105 transition-transform"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                    e.target.src = DEFAULT_AVATAR;
                   }}
                 />
                 <label
@@ -264,6 +299,13 @@ const AdminSettings = () => {
                   title="Click to select image file"
                 >
                   <FiCamera className="w-5 h-5" />
+                </label>
+                <label
+                  htmlFor="admin-avatar-upload"
+                  className="md:hidden absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md cursor-pointer border border-white"
+                  title="Tap to change photo"
+                >
+                  <FiCamera className="w-3 h-3" />
                 </label>
               </div>
 
@@ -275,23 +317,38 @@ const AdminSettings = () => {
                   </span>
                 </div>
                 <p className="text-[11px] font-mono text-theme-textMuted mt-0.5 max-w-md">
-                  Upload an image from your computer OR paste a direct URL. Your photo updates instantly across the Hero, About, and Navigation on the public home page.
+                  Upload an image from your computer or phone, OR paste a direct URL. Automatically optimized for phones and desktops.
                 </p>
                 {avatarFile && (
                   <p className="text-xs text-indigo-500 font-mono font-semibold mt-1">
-                    Selected file: {avatarFile.name} (ready to save)
+                    Selected file: {avatarFile.name} (ready to apply)
                   </p>
                 )}
               </div>
             </div>
 
-            <label
-              htmlFor="admin-avatar-upload"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-mono font-bold transition-all shadow-glowSm cursor-pointer shrink-0"
-            >
-              <FiUploadCloud className="w-4 h-4" />
-              <span>Choose Image File</span>
-            </label>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <label
+                htmlFor="admin-avatar-upload"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-mono font-bold transition-all shadow-glowSm cursor-pointer"
+              >
+                <FiUploadCloud className="w-4 h-4" />
+                <span>{avatarFile ? 'Change File' : 'Choose Image File'}</span>
+              </label>
+
+              {avatarFile && (
+                <button
+                  type="button"
+                  onClick={handleDirectAvatarSave}
+                  disabled={updatingProfile}
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-mono font-bold transition-all shadow-glowSm disabled:opacity-50"
+                >
+                  <FiSave className="w-4 h-4" />
+                  <span>{updatingProfile ? 'Saving...' : 'Save Photo Now'}</span>
+                </button>
+              )}
+            </div>
+
             <input
               id="admin-avatar-upload"
               type="file"

@@ -41,18 +41,17 @@ const profileSchema = new mongoose.Schema(
     avatar: {
       url: {
         type: String,
-        default:
-          'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+        default: '/uploads/1793208526247_1hk7ux.jpg',
       },
       public_id: {
         type: String,
-        default: '',
+        default: 'local_1793208526247_1hk7ux.jpg',
       },
     },
     resume: {
       url: {
         type: String,
-        default: 'http://localhost:5000/uploads/Praveen_Rai_Resume.pdf',
+        default: '/uploads/Praveen_Rai_Resume.pdf',
       },
       public_id: {
         type: String,
@@ -82,7 +81,7 @@ const profileSchema = new mongoose.Schema(
       },
       leetcode: {
         type: String,
-        default: 'https://leetcode.com/',
+        default: 'https://leetcode.com/u/Praveen_913/',
       },
       instagram: {
         type: String,

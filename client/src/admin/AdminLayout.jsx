@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/adminService';
 import ThemeToggle from '../components/common/ThemeToggle';
+import { getAssetUrl, DEFAULT_AVATAR } from '../utils/imageUrl';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -46,12 +47,11 @@ const AdminLayout = () => {
     url.includes('photo-1534528741775-53994a69daeb') ||
     url.includes('default-avatar');
 
-  const avatarSrc =
+  const avatarSrc = getAssetUrl(
     (!isDefaultUnsplash(profile?.avatar?.url) && profile?.avatar?.url) ||
     (!isDefaultUnsplash(user?.avatar?.url) && user?.avatar?.url) ||
-    profile?.avatar?.url ||
-    user?.avatar?.url ||
-    'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+    DEFAULT_AVATAR
+  );
 
   const handleLogout = async () => {
     await logout();
@@ -96,7 +96,7 @@ const AdminLayout = () => {
             className="w-8 h-8 rounded-full object-cover border border-indigo-500/40"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+              e.target.src = DEFAULT_AVATAR;
             }}
           />
         </div>
@@ -147,7 +147,7 @@ const AdminLayout = () => {
                 className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+                  e.target.src = DEFAULT_AVATAR;
                 }}
               />
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-theme-surface" />

@@ -9,6 +9,7 @@ const Testimonial = require('../models/Testimonial');
 const Message = require('../models/Message');
 const Visit = require('../models/Visit');
 const sendEmail = require('../utils/sendEmail');
+const { normalizeAssetUrl } = require('../utils/urlHelper');
 
 /**
  * @desc    Get all public portfolio data in a single optimized payload
@@ -27,10 +28,18 @@ const getPublicData = async (req, res, next) => {
         Testimonial.find({ status: 'approved' }).sort({ createdAt: -1 }),
       ]);
 
+    let formattedProfile = profile ? profile.toObject() : {};
+    if (formattedProfile.avatar?.url) {
+      formattedProfile.avatar.url = normalizeAssetUrl(formattedProfile.avatar.url, req);
+    }
+    if (formattedProfile.resume?.url) {
+      formattedProfile.resume.url = normalizeAssetUrl(formattedProfile.resume.url, req);
+    }
+
     res.status(200).json({
       success: true,
       data: {
-        profile: profile || {},
+        profile: formattedProfile,
         projects: projects || [],
         skills: skills || [],
         education: education || [],
@@ -130,10 +139,12 @@ const getResumeDownload = async (req, res, next) => {
     const port = process.env.PORT || 5000;
     const defaultUrl = `${process.env.BACKEND_URL || `http://localhost:${port}`}/uploads/Praveen_Rai_Resume.pdf`;
 
-    const resumeUrl =
+    const rawUrl =
       profile && profile.resume && profile.resume.url
         ? profile.resume.url
         : defaultUrl;
+
+    const resumeUrl = normalizeAssetUrl(rawUrl, req);
 
     const fileName =
       profile && profile.resume && profile.resume.fileName

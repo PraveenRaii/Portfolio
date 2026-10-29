@@ -11,11 +11,10 @@ import {
   LuSparkles,
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
+import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const AboutSection = ({ profile }) => {
-  const avatarSrc =
-    profile?.avatar?.url ||
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+  const avatarSrc = getAssetUrl(profile?.avatar?.url);
 
   const focusAreas = [
     {
@@ -79,8 +78,7 @@ const AboutSection = ({ profile }) => {
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src =
-                        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                      e.target.src = DEFAULT_AVATAR;
                     }}
                   />
                   {/* Subtle Gradient Vignette */}

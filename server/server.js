@@ -7,14 +7,57 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const Profile = require('./models/Profile');
+const User = require('./models/User');
 
 // Load environment variables
 dotenv.config();
 
 // Connect to MongoDB
-connectDB();
+connectDB().then(async () => {
+  // Auto-heal: Ensure MongoDB profile avatar is initialized with Praveen's real photo
+  try {
+    const fallbackPhotoUrl = '/uploads/1793208526247_1hk7ux.jpg';
+    const profile = await Profile.findOne();
+    if (profile) {
+      const isPlaceholder =
+        !profile.avatar?.url ||
+        profile.avatar.url.includes('photo-1534528741775-53994a69daeb') ||
+        profile.avatar.url.includes('default-avatar');
+      if (isPlaceholder) {
+        profile.avatar = {
+          url: fallbackPhotoUrl,
+          public_id: 'local_1793208526247_1hk7ux.jpg',
+        };
+        await profile.save();
+        console.log('[Profile Init]: Synced Profile avatar in MongoDB with Praveen real portrait');
+      }
+    }
+
+    const adminUser = await User.findOne({ role: 'admin' });
+    if (adminUser) {
+      const isPlaceholder =
+        !adminUser.avatar?.url ||
+        adminUser.avatar.url.includes('photo-1534528741775-53994a69daeb') ||
+        adminUser.avatar.url.includes('default-avatar');
+      if (isPlaceholder) {
+        adminUser.avatar = {
+          url: fallbackPhotoUrl,
+          public_id: 'local_1793208526247_1hk7ux.jpg',
+        };
+        await adminUser.save();
+        console.log('[Profile Init]: Synced Admin user avatar in MongoDB with Praveen real portrait');
+      }
+    }
+  } catch (err) {
+    console.warn('[Profile Init Notice]:', err.message);
+  }
+});
 
 const app = express();
+
+// Trust reverse proxy (essential for Render / Cloud hosting protocol & host detection)
+app.set('trust proxy', 1);
 
 // Security Headers via Helmet
 app.use(
@@ -46,8 +89,8 @@ app.use(
 );
 
 // Body Parsers & Cookie Parser
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use(cookieParser());
 
 // Serve static uploaded assets

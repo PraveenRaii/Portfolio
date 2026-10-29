@@ -4,6 +4,7 @@ import { LuStar, LuMessageSquare, LuQuote, LuCheck } from 'react-icons/lu';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
+import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const TestimonialsSection = ({ testimonials = [] }) => {
   const { isAuthenticated, role } = useAuth();
@@ -93,12 +94,13 @@ const TestimonialsSection = ({ testimonials = [] }) => {
 
                 <div className="flex items-center gap-3 pt-5 mt-5 border-t border-theme-border/60">
                   <img
-                    src={
-                      item.avatar ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'
-                    }
+                    src={getAssetUrl(item.avatar)}
                     alt={item.name}
                     className="w-9 h-9 rounded-full object-cover border border-theme-border"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_AVATAR;
+                    }}
                   />
                   <div className="min-w-0">
                     <h4 className="font-heading font-bold text-xs text-theme-text truncate group-hover:text-indigo-500 transition-colors">

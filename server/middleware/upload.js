@@ -1,15 +1,19 @@
 const multer = require('multer');
 const path = require('path');
 
-// Store files in memory buffer before streaming to Cloudinary
+// Store files in memory buffer before streaming to Cloudinary or disk fallback
 const storage = multer.memoryStorage();
 
 // File filter for images (avatar, project cover, certificate)
 const imageFileFilter = (req, file, cb) => {
-  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg'];
-  const ext = path.extname(file.originalname).toLowerCase();
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.heic', '.heif'];
+  const ext = path.extname(file.originalname || '').toLowerCase();
 
-  if (allowedExtensions.includes(ext) || file.mimetype.startsWith('image/')) {
+  if (
+    allowedExtensions.includes(ext) ||
+    file.mimetype.startsWith('image/') ||
+    !ext // phone camera uploads sometimes have empty extension in originalname
+  ) {
     cb(null, true);
   } else {
     cb(new Error('Invalid file type! Only JPG, JPEG, PNG, WEBP, and SVG image files are allowed.'), false);
@@ -18,7 +22,7 @@ const imageFileFilter = (req, file, cb) => {
 
 // File filter for resume (PDF only)
 const resumeFileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
+  const ext = path.extname(file.originalname || '').toLowerCase();
   if (ext === '.pdf' || file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
@@ -28,7 +32,7 @@ const resumeFileFilter = (req, file, cb) => {
 
 const uploadImage = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB max
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB max for high-resolution mobile camera photos
   fileFilter: imageFileFilter,
 });
 

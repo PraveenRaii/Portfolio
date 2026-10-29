@@ -15,6 +15,7 @@ import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
 import { publicService } from '../../services/publicService';
 import toast from 'react-hot-toast';
+import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const ContactSection = ({ profile }) => {
   const [formData, setFormData] = useState({
@@ -92,16 +93,12 @@ const ContactSection = ({ profile }) => {
             <div className="p-4 rounded-3xl border border-theme-border bg-theme-surface shadow-subtle flex items-center gap-4">
               <div className="relative shrink-0">
                 <img
-                  src={
-                    profile?.avatar?.url ||
-                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80'
-                  }
+                  src={getAssetUrl(profile?.avatar?.url)}
                   alt={profile?.name || 'Praveen Rai'}
                   className="w-14 h-14 rounded-2xl object-cover border-2 border-indigo-500/30 shadow-sm"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                    e.target.src = DEFAULT_AVATAR;
                   }}
                 />
                 <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-theme-surface" />

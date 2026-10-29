@@ -16,13 +16,13 @@ import {
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
+import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME } from '../../utils/imageUrl';
 
 const HeroSection = ({ profile }) => {
   const [activeCodeTab, setActiveCodeTab] = useState('controller');
 
-  const avatarSrc =
-    profile?.avatar?.url ||
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+  const avatarSrc = getAssetUrl(profile?.avatar?.url);
+  const resumeUrl = getAssetUrl(profile?.resume?.url) || DEFAULT_RESUME;
 
   return (
     <section
@@ -56,8 +56,7 @@ const HeroSection = ({ profile }) => {
                   className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-theme-surface shadow-md group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                    e.target.src = DEFAULT_AVATAR;
                   }}
                 />
                 <span
@@ -137,7 +136,7 @@ const HeroSection = ({ profile }) => {
               </a>
 
               <a
-                href="http://localhost:5000/uploads/Praveen_Rai_Resume.pdf"
+                href={resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -328,8 +327,7 @@ const HeroSection = ({ profile }) => {
                         className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl object-cover border-2 border-white/20 shadow-2xl"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src =
-                            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80';
+                          e.target.src = DEFAULT_AVATAR;
                         }}
                       />
                       <span className="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-[10px] font-mono text-emerald-400 flex items-center gap-1.5 font-bold">

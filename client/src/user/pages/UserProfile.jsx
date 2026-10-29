@@ -7,6 +7,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { getAssetUrl, DEFAULT_AVATAR, compressImageFile } from '../../utils/imageUrl';
 
 const UserProfile = () => {
   const { user, setUser, logout } = useAuth();
@@ -32,11 +33,18 @@ const UserProfile = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
+      try {
+        const compressed = await compressImageFile(file);
+        setAvatarFile(compressed);
+        setAvatarPreview(URL.createObjectURL(compressed));
+        toast.success(`Photo selected (${(compressed.size / 1024).toFixed(0)} KB). Click Save to apply.`);
+      } catch {
+        setAvatarFile(file);
+        setAvatarPreview(URL.createObjectURL(file));
+      }
     }
   };
 
@@ -129,17 +137,28 @@ const UserProfile = () => {
         <form onSubmit={handleProfileSubmit} className="space-y-6">
           {/* Avatar Upload */}
           <div className="flex items-center gap-6">
-            <div className="relative group">
+            <div className="relative group shrink-0">
               <img
-                src={avatarPreview || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
+                src={getAssetUrl(avatarPreview || user?.avatar?.url)}
                 alt={user?.name}
                 className="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-500/40"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = DEFAULT_AVATAR;
+                }}
               />
               <label
                 htmlFor="avatar-upload"
                 className="absolute inset-0 bg-black/60 text-white rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
               >
                 <FiCamera className="w-5 h-5" />
+              </label>
+              <label
+                htmlFor="avatar-upload"
+                className="md:hidden absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-md cursor-pointer border border-white"
+                title="Change photo"
+              >
+                <FiCamera className="w-3 h-3" />
               </label>
               <input
                 id="avatar-upload"
@@ -152,7 +171,7 @@ const UserProfile = () => {
             <div>
               <p className="text-xs font-heading font-bold text-theme-text">Profile Photo</p>
               <p className="text-[11px] font-mono text-theme-textMuted mt-0.5">
-                PNG, JPG or WEBP. Uploaded securely to Cloudinary asset storage.
+                PNG, JPG or WEBP. Uploaded securely and synced to your profile.
               </p>
               <label
                 htmlFor="avatar-upload"

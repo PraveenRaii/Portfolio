@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '../components/common/ThemeToggle';
+import { getAssetUrl, DEFAULT_AVATAR } from '../utils/imageUrl';
 
 const UserLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -55,12 +56,12 @@ const UserLayout = () => {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <img
-            src={user?.avatar?.url || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
+            src={getAssetUrl(user?.avatar?.url)}
             alt={user?.name}
             className="w-8 h-8 rounded-full object-cover border border-indigo-500/40"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+              e.target.src = DEFAULT_AVATAR;
             }}
           />
         </div>
@@ -104,12 +105,12 @@ const UserLayout = () => {
           {/* User Profile Snippet */}
           <div className="p-3 rounded-2xl bg-theme-surfaceSecondary border border-theme-border flex items-center gap-3">
             <img
-              src={user?.avatar?.url || 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg'}
+              src={getAssetUrl(user?.avatar?.url)}
               alt={user?.name}
               className="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shrink-0"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = 'http://localhost:5000/uploads/1793208526247_1hk7ux.jpg';
+                e.target.src = DEFAULT_AVATAR;
               }}
             />
             <div className="overflow-hidden">

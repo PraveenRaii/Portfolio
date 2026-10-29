@@ -46,7 +46,7 @@ const seedDatabase = async () => {
       collegeOrCompany: 'SRMU Lucknow / Sunstone',
       isBlocked: false,
       avatar: {
-        url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+        url: '/uploads/1793208526247_1hk7ux.jpg',
         public_id: '',
       },
     });
@@ -79,7 +79,7 @@ const seedDatabase = async () => {
       phone: '+91-9876543210',
       location: 'Lucknow, Uttar Pradesh, India',
       avatar: {
-        url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+        url: '/uploads/1793208526247_1hk7ux.jpg',
         public_id: '',
       },
       resume: {

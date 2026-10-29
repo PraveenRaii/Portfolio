@@ -3,6 +3,7 @@ const Project = require('../models/Project');
 const Testimonial = require('../models/Testimonial');
 const Message = require('../models/Message');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinaryUpload');
+const { normalizeAssetUrl } = require('../utils/urlHelper');
 
 /**
  * @desc    Get user dashboard stats and overview
@@ -272,7 +273,9 @@ const updateUserProfile = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
+        avatar: user.avatar?.url
+          ? { ...user.avatar, url: normalizeAssetUrl(user.avatar.url, req) }
+          : user.avatar,
         collegeOrCompany: user.collegeOrCompany,
       },
     });

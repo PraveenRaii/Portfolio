@@ -13,8 +13,9 @@ if (!fs.existsSync(uploadsDir)) {
  * Upload buffer to Cloudinary with automatic local storage fallback on 403/network errors
  * @param {Buffer} buffer - File buffer from multer
  * @param {Object} options - Cloudinary upload options { folder, resource_type, public_id }
+ * @param {Object} req - Optional Express request for determining current host dynamically
  */
-const uploadToCloudinary = (buffer, options = {}) => {
+const uploadToCloudinary = (buffer, options = {}, req = null) => {
   return new Promise((resolve) => {
     let handled = false;
 
@@ -32,10 +33,22 @@ const uploadToCloudinary = (buffer, options = {}) => {
         console.warn(`[Storage Fallback Activated]: File saved locally to /uploads/${filename} (${reason})`);
 
         const port = process.env.PORT || 5000;
-        const host = process.env.BACKEND_URL || `http://localhost:${port}`;
+        let host = process.env.BACKEND_URL;
+        if (!host && req) {
+          const protocol = req.headers?.['x-forwarded-proto'] || req.protocol || 'http';
+          const hostHeader = req.headers?.['x-forwarded-host'] || req.get?.('host');
+          if (hostHeader) {
+            host = `${protocol}://${hostHeader}`;
+          }
+        }
+        if (!host) {
+          host = `http://localhost:${port}`;
+        }
+
         resolve({
           secure_url: `${host}/uploads/${filename}`,
           url: `${host}/uploads/${filename}`,
+          relative_url: `/uploads/${filename}`,
           public_id: `local_${filename}`,
         });
       } catch (err) {

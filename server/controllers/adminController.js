@@ -9,6 +9,7 @@ const Profile = require('../models/Profile');
 const Visit = require('../models/Visit');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinaryUpload');
 const sendEmail = require('../utils/sendEmail');
+const { normalizeAssetUrl } = require('../utils/urlHelper');
 
 // ==========================================
 // 1. DASHBOARD & ANALYTICS
@@ -642,7 +643,14 @@ const getAdminProfile = async (req, res, next) => {
     if (!profile) {
       profile = await Profile.create({});
     }
-    res.status(200).json({ success: true, data: profile });
+    let formattedProfile = profile.toObject();
+    if (formattedProfile.avatar?.url) {
+      formattedProfile.avatar.url = normalizeAssetUrl(formattedProfile.avatar.url, req);
+    }
+    if (formattedProfile.resume?.url) {
+      formattedProfile.resume.url = normalizeAssetUrl(formattedProfile.resume.url, req);
+    }
+    res.status(200).json({ success: true, data: formattedProfile });
   } catch (error) {
     next(error);
   }
@@ -715,7 +723,15 @@ const updateAdminProfile = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Profile settings updated successfully',
-      data: profile,
+      data: {
+        ...profile.toObject(),
+        avatar: profile.avatar?.url
+          ? { ...profile.avatar, url: normalizeAssetUrl(profile.avatar.url, req) }
+          : profile.avatar,
+        resume: profile.resume?.url
+          ? { ...profile.resume, url: normalizeAssetUrl(profile.resume.url, req) }
+          : profile.resume,
+      },
     });
   } catch (error) {
     next(error);
@@ -760,7 +776,10 @@ const uploadResumePDF = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: 'Resume PDF uploaded and published successfully!',
-      data: profile.resume,
+      data: {
+        ...(profile.resume?.toObject ? profile.resume.toObject() : profile.resume),
+        url: normalizeAssetUrl(profile.resume?.url, req),
+      },
     });
   } catch (error) {
     next(error);

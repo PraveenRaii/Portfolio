@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Profile = require('../models/Profile');
 const sendEmail = require('../utils/sendEmail');
+const { normalizeAssetUrl } = require('../utils/urlHelper');
 
 // Helper to generate token and send httpOnly cookie
 const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
@@ -32,7 +33,9 @@ const sendTokenResponse = (user, statusCode, res, message = 'Success') => {
         name: user.name,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
+        avatar: user.avatar?.url
+          ? { ...user.avatar, url: normalizeAssetUrl(user.avatar.url, req) }
+          : user.avatar,
         collegeOrCompany: user.collegeOrCompany,
         savedProjects: user.savedProjects || [],
       },
@@ -147,7 +150,9 @@ const getMe = async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        avatar: user.avatar,
+        avatar: user.avatar?.url
+          ? { ...user.avatar, url: normalizeAssetUrl(user.avatar.url, req) }
+          : user.avatar,
         collegeOrCompany: user.collegeOrCompany,
         savedProjects: user.savedProjects || [],
       },

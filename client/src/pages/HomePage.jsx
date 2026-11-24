@@ -10,6 +10,7 @@ import ExperienceSection from '../components/sections/ExperienceSection';
 import HackathonsSection from '../components/sections/HackathonsSection';
 import TestimonialsSection from '../components/sections/TestimonialsSection';
 import ContactSection from '../components/sections/ContactSection';
+import HeyGenVoiceAssistant from '../components/voice/HeyGenVoiceAssistant';
 import { publicService } from '../services/publicService';
 
 const HomePage = () => {
@@ -73,6 +74,9 @@ const HomePage = () => {
 
       {/* Studio Editorial Footer */}
       <Footer profile={data?.profile} />
+
+      {/* HeyGen Interactive Voice AI Guide */}
+      <HeyGenVoiceAssistant />
     </div>
   );
 };

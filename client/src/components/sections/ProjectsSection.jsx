@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   LuExternalLink,
@@ -10,9 +10,12 @@ import {
   LuHeart,
   LuBookmark,
   LuSparkles,
+  LuHeadphones,
+  LuPause,
 } from 'react-icons/lu';
 import { useAuth } from '../../context/AuthContext';
 import { userService } from '../../services/userService';
+import { voiceService } from '../../services/voiceService';
 import toast from 'react-hot-toast';
 
 // Rich fallback previews for initial demonstration builds
@@ -325,6 +328,42 @@ const ProjectsSection = ({ projects = [] }) => {
     }
   };
 
+  // HeyGen Voice AI project audio briefing
+  const [playingProjectId, setPlayingProjectId] = useState(null);
+  const [loadingProjectId, setLoadingProjectId] = useState(null);
+  const projectAudioRef = useRef(null);
+
+  const handlePlayProjectAudio = async (project) => {
+    if (playingProjectId === project.id && projectAudioRef.current) {
+      projectAudioRef.current.pause();
+      setPlayingProjectId(null);
+      return;
+    }
+
+    try {
+      setLoadingProjectId(project.id);
+      const script = `Project ${project.title}. ${project.description} Problem solved: ${project.problemSolved}`;
+      const res = await voiceService.speak(script);
+      if (res.success && res.data?.audioUrl) {
+        if (!projectAudioRef.current) {
+          projectAudioRef.current = new Audio(res.data.audioUrl);
+          projectAudioRef.current.onended = () => setPlayingProjectId(null);
+          projectAudioRef.current.onpause = () => setPlayingProjectId(null);
+          projectAudioRef.current.onplay = () => setPlayingProjectId(project.id);
+        } else {
+          projectAudioRef.current.src = res.data.audioUrl;
+        }
+        await projectAudioRef.current.play();
+        setPlayingProjectId(project.id);
+        toast.success(`Playing audio overview for ${project.title} (HeyGen Voice AI)`);
+      }
+    } catch (err) {
+      toast.error('Could not play project audio overview');
+    } finally {
+      setLoadingProjectId(null);
+    }
+  };
+
   return (
     <section id="projects" className="py-24 border-b border-theme-border relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -470,7 +509,7 @@ const ProjectsSection = ({ projects = [] }) => {
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-4 border-t border-theme-border flex items-center gap-5">
+                  <div className="pt-4 border-t border-theme-border flex flex-wrap items-center gap-4 sm:gap-5">
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
@@ -494,6 +533,24 @@ const ProjectsSection = ({ projects = [] }) => {
                         <span>GitHub Repository</span>
                       </a>
                     )}
+
+                    {/* HeyGen AI Voice Overview */}
+                    <button
+                      type="button"
+                      onClick={() => handlePlayProjectAudio(project)}
+                      disabled={loadingProjectId === project.id}
+                      className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors disabled:opacity-50"
+                      title="Listen to project overview narrated by HeyGen Voice AI"
+                    >
+                      {loadingProjectId === project.id ? (
+                        <span className="w-3 h-3 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                      ) : playingProjectId === project.id ? (
+                        <LuPause className="w-3.5 h-3.5 text-cyan-500 animate-pulse" />
+                      ) : (
+                        <LuHeadphones className="w-3.5 h-3.5" />
+                      )}
+                      <span>{playingProjectId === project.id ? 'Pause Audio' : '🎧 Audio Brief'}</span>
+                    </button>
                   </div>
                 </div>
               </motion.article>

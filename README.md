@@ -20,6 +20,7 @@ Designed with a studio-grade editorial visual identity featuring **Burnt Orange 
 ### Backend Ecosystem
 * **Runtime & Framework:** Node.js 20+ & Express.js
 * **Database & ORM:** MongoDB Atlas with Mongoose
+* **Voice AI Engine:** HeyGen Voice AI v3 (HeyGen Voice 1 Turbo Free) with multi-voice selection and audio caching
 * **Authentication:** Stateless JWT stored in secure `httpOnly` cookies with role authorization middleware (`verifyToken`, `isAdmin`, `isUser`)
 * **Security Suite:** Helmet (HTTP security headers), CORS (origin validation), Express Rate Limiter, and Bcrypt password hashing
 * **Media & File Storage:** Multer with Cloudinary CDN integration and local disk fallback
@@ -28,6 +29,12 @@ Designed with a studio-grade editorial visual identity featuring **Burnt Orange 
 ---
 
 ## 🌟 Key Features
+
+### 🎙️ HeyGen Voice AI Integration
+* **Floating Voice AI Guide:** Real-time conversational AI voice widget allowing visitors to ask about Praveen's skills, experience, education, projects, and contact info with synchronized audio waveforms.
+* **Hero Section Voice Intro:** One-click "Listen to AI Voice Intro" button narrating Praveen's personal elevator pitch using HeyGen's natural male voice clone (`Lewis - Imaginative & Expressive`).
+* **Project Audio Briefings:** "Audio Brief" feature on featured project cards narrating architecture, problem solved, and technical stack.
+* **Voice Customization & Testing:** Admin dashboard section allowing administrators to test speech synthesis, view HeyGen API status, and switch between voices (Lewis, Annie, Brodie, Janet, Roderic).
 
 ### 1. Public Portfolio
 * **Signature Two-Column Hero:** Interactive developer workspace code editor showcasing syntax-highlighted Java & Spring Boot code with line numbers, status pill, and floating badges.

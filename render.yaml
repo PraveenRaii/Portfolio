@@ -42,6 +42,10 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+      - key: HEYGEN_API_KEY
+        sync: false
+      - key: HEYGEN_DEFAULT_VOICE_ID
+        value: 80b17a1be1594e578b92c0ddf4a37fc8
 
   # -----------------------------------------------------------
   # 2. Frontend Static Site (React 18 + Vite + Tailwind CSS)

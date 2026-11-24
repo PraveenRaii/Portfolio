@@ -113,6 +113,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/public', require('./routes/publicRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/voice', require('./routes/voiceRoutes'));
 
 // 404 Route Handler for undefined endpoints
 app.use('*', (req, res) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   FiSave,
   FiUploadCloud,
@@ -7,9 +7,13 @@ import {
   FiCamera,
   FiGlobe,
   FiSettings,
+  FiMic,
+  FiVolume2,
+  FiPlay,
 } from 'react-icons/fi';
 import { SiLeetcode } from 'react-icons/si';
 import { adminService } from '../../services/adminService';
+import { voiceService } from '../../services/voiceService';
 import Button from '../../components/common/Button';
 import LoadingSkeleton from '../../components/common/LoadingSkeleton';
 import toast from 'react-hot-toast';
@@ -46,6 +50,55 @@ const AdminSettings = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [uploadingResume, setUploadingResume] = useState(false);
 
+  // HeyGen Voice AI Testing State
+  const [heyGenStatus, setHeyGenStatus] = useState(null);
+  const [testVoiceText, setTestVoiceText] = useState(
+    "Hello! This is Praveen's HeyGen AI Voice running on HeyGen Voice 1 Turbo Free. Everything is configured and ready!"
+  );
+  const [testVoiceId, setTestVoiceId] = useState('80b17a1be1594e578b92c0ddf4a37fc8');
+  const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
+  const [testAudioUrl, setTestAudioUrl] = useState('');
+  const testAudioRef = useRef(null);
+
+  const fetchHeyGenStatus = async () => {
+    try {
+      const res = await voiceService.getStatus();
+      if (res.success && res.data) {
+        setHeyGenStatus(res.data);
+        if (res.data.defaultVoiceId) {
+          setTestVoiceId(res.data.defaultVoiceId);
+        }
+      }
+    } catch (err) {
+      console.warn('HeyGen status fetch failed:', err.message);
+    }
+  };
+
+  const handleTestVoiceSynthesis = async () => {
+    if (!testVoiceText.trim()) {
+      toast.error('Please enter text to synthesize');
+      return;
+    }
+    try {
+      setIsGeneratingVoice(true);
+      const res = await voiceService.speak(testVoiceText, testVoiceId);
+      if (res.success && res.data?.audioUrl) {
+        setTestAudioUrl(res.data.audioUrl);
+        toast.success('Voice synthesized with HeyGen AI!');
+        if (!testAudioRef.current) {
+          testAudioRef.current = new Audio(res.data.audioUrl);
+        } else {
+          testAudioRef.current.src = res.data.audioUrl;
+        }
+        testAudioRef.current.play().catch(() => {});
+      }
+    } catch (err) {
+      toast.error(err.message || 'HeyGen voice synthesis failed');
+    } finally {
+      setIsGeneratingVoice(false);
+    }
+  };
+
   const fetchProfile = async () => {
     try {
       setLoading(true);
@@ -79,6 +132,7 @@ const AdminSettings = () => {
 
   useEffect(() => {
     fetchProfile();
+    fetchHeyGenStatus();
   }, []);
 
   const handleAvatarChange = async (e) => {
@@ -521,6 +575,121 @@ const AdminSettings = () => {
           </Button>
         </div>
       </form>
+
+      {/* ---------------- HeyGen Voice AI Integration Panel ---------------- */}
+      <div className="p-6 rounded-2xl border border-indigo-500/30 bg-theme-surface shadow-subtle space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-theme-border">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+              <FiMic className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-heading font-bold text-base text-theme-text">
+                  HeyGen Voice AI Integration
+                </h3>
+                {heyGenStatus?.connected ? (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-semibold">
+                    Connected &bull; Active
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 font-semibold">
+                    Checking Status...
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-theme-textMuted font-sans">
+                Powered by HeyGen Voice 1 Turbo Free. Real-time voice synthesis and interactive voice guide.
+              </p>
+            </div>
+          </div>
+
+          {heyGenStatus?.email && (
+            <div className="text-right font-mono text-xs text-theme-textMuted">
+              <span className="block text-theme-text font-semibold">{heyGenStatus.email}</span>
+              <span className="text-[10px] text-emerald-500">
+                Plan: {heyGenStatus.billingType?.toUpperCase()} &bull; Balance: ${heyGenStatus.remainingBalance}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Live Voice Synthesis Tester */}
+        <div className="space-y-3 pt-1">
+          <label className="block text-xs font-mono font-bold uppercase tracking-wider text-theme-text">
+            🎙️ Live Voice Synthesis Tester
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="sm:col-span-2 space-y-1.5">
+              <textarea
+                rows={3}
+                value={testVoiceText}
+                onChange={(e) => setTestVoiceText(e.target.value)}
+                placeholder="Type any announcement, bio, or text to test HeyGen Voice AI..."
+                className="w-full p-3 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
+              />
+            </div>
+
+            <div className="space-y-3 flex flex-col justify-between">
+              <div>
+                <label className="block text-[11px] font-mono text-theme-textMuted mb-1">
+                  Select HeyGen Voice
+                </label>
+                <select
+                  value={testVoiceId}
+                  onChange={(e) => setTestVoiceId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                >
+                  <option value="80b17a1be1594e578b92c0ddf4a37fc8">
+                    Lewis (Praveen - Male UK)
+                  </option>
+                  <option value="330290724a1b470fb63153f34d4c0183">
+                    Annie (Lifelike - Female US)
+                  </option>
+                  <option value="c30ecab014cb4a8d816d07f6b2b625c8">
+                    Brodie (Breezy - Male UK)
+                  </option>
+                  <option value="4270665fc47f44aa989c093bb3dc2b99">
+                    Janet (Warm - Female US)
+                  </option>
+                  <option value="b5c5b28db1ea408abc7d851202983bdb">
+                    Roderic (Authoritative - Male UK)
+                  </option>
+                </select>
+              </div>
+
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                icon={FiVolume2}
+                isLoading={isGeneratingVoice}
+                onClick={handleTestVoiceSynthesis}
+                className="w-full justify-center"
+              >
+                Generate &amp; Play Speech
+              </Button>
+            </div>
+          </div>
+
+          {testAudioUrl && (
+            <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
+                <FiPlay className="w-4 h-4" />
+                <span>Last Generated HeyGen Audio Clip Ready</span>
+              </div>
+              <a
+                href={testAudioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-indigo-500 hover:underline"
+              >
+                Open WAV File &rarr;
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

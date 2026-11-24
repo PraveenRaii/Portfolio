@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   LuArrowDown,
@@ -13,13 +13,53 @@ import {
   LuSparkles,
   LuArrowUpRight,
   LuUser,
+  LuHeadphones,
+  LuPause,
 } from 'react-icons/lu';
 import { SiLeetcode } from 'react-icons/si';
 import Button from '../common/Button';
 import { getAssetUrl, DEFAULT_AVATAR, DEFAULT_RESUME, FALLBACK_AVATAR_DATA_URI } from '../../utils/imageUrl';
+import { voiceService } from '../../services/voiceService';
+import toast from 'react-hot-toast';
 
 const HeroSection = ({ profile }) => {
   const [activeCodeTab, setActiveCodeTab] = useState('controller');
+  const [isVoicePlaying, setIsVoicePlaying] = useState(false);
+  const [isVoiceLoading, setIsVoiceLoading] = useState(false);
+  const voiceAudioRef = useRef(null);
+
+  const handlePlayVoiceBio = async () => {
+    if (isVoicePlaying && voiceAudioRef.current) {
+      voiceAudioRef.current.pause();
+      setIsVoicePlaying(false);
+      return;
+    }
+
+    try {
+      setIsVoiceLoading(true);
+      const res = await voiceService.ask('intro');
+      if (res.success && res.data?.audioUrl) {
+        if (!voiceAudioRef.current) {
+          voiceAudioRef.current = new Audio(res.data.audioUrl);
+          voiceAudioRef.current.onended = () => setIsVoicePlaying(false);
+          voiceAudioRef.current.onpause = () => setIsVoicePlaying(false);
+          voiceAudioRef.current.onplay = () => setIsVoicePlaying(true);
+        } else {
+          voiceAudioRef.current.src = res.data.audioUrl;
+        }
+        await voiceAudioRef.current.play();
+        setIsVoicePlaying(true);
+        toast.success("Playing Praveen's Voice Intro (HeyGen AI)");
+      } else {
+        toast.error("Voice AI intro unavailable, check Voice Assistant");
+      }
+    } catch (err) {
+      console.error('Voice play error:', err);
+      toast.error('Could not play voice intro');
+    } finally {
+      setIsVoiceLoading(false);
+    }
+  };
 
   const avatarSrc = getAssetUrl(profile?.avatar?.url);
   const resumeUrl = getAssetUrl(profile?.resume?.url) || DEFAULT_RESUME;
@@ -144,6 +184,23 @@ const HeroSection = ({ profile }) => {
                   Resume PDF
                 </Button>
               </a>
+
+              <button
+                type="button"
+                onClick={handlePlayVoiceBio}
+                disabled={isVoiceLoading}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-semibold shadow-subtle transition-all disabled:opacity-50"
+                title="Listen to Praveen's Voice Introduction powered by HeyGen Voice AI"
+              >
+                {isVoiceLoading ? (
+                  <span className="w-3.5 h-3.5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                ) : isVoicePlaying ? (
+                  <LuPause className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+                ) : (
+                  <LuHeadphones className="w-3.5 h-3.5 text-indigo-500" />
+                )}
+                <span>{isVoicePlaying ? 'Pause Voice Intro' : '🎧 Listen to AI Voice Intro'}</span>
+              </button>
             </div>
 
             {/* Subtle Availability Label */}

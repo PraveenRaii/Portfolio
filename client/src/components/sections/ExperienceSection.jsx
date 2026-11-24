@@ -18,9 +18,9 @@ import { getAssetUrl, DEFAULT_AVATAR } from '../../utils/imageUrl';
 
 const fallbackEducation = [
   {
-    degree: 'B.Tech in Computer Science & Engineering (3rd Year)',
+    degree: 'B.Tech in Computer Science & Engineering',
     institution: 'Shri Ramswaroop Memorial University (SRMU), Lucknow (Powered by Sunstone)',
-    period: '2022 – 2026 (Expected)',
+    period: '2024 – 2028 (Expected)',
     location: 'Lucknow, Uttar Pradesh',
     highlights: [
       'Core coursework: Data Structures & Algorithms, Object-Oriented Programming in Java, Database Management Systems (MySQL), and Software Engineering.',

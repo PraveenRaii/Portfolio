@@ -597,7 +597,7 @@ const AdminEducationCertificates = () => {
                 type="text"
                 value={eduForm.endDate}
                 onChange={(e) => setEduForm({ ...eduForm, endDate: e.target.value })}
-                placeholder="2026 or Present"
+                placeholder="2028 or Present"
                 className="w-full px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surfaceSecondary text-theme-text text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 font-sans"
               />
             </div>

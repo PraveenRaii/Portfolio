@@ -181,8 +181,8 @@ const seedDatabase = async () => {
         degree: 'Bachelor of Technology (B.Tech) - Computer Science & Engineering',
         institution: 'Shri Ramswaroop Memorial University (SRMU), Lucknow (Powered by Sunstone)',
         fieldOfStudy: 'Computer Science and Information Technology',
-        startDate: '2022',
-        endDate: '2026',
+        startDate: '2024',
+        endDate: '2028',
         current: true,
         grade: 'Current: 3rd Year (8.2 CGPA)',
         description:

@@ -137,7 +137,7 @@ const askPortfolioAssistant = async (req, res, next) => {
     ) {
       category = 'education';
       answerText =
-        "Praveen is pursuing his B.Tech in Computer Science and Engineering from Shri Ramswaroop Memorial University (SRMU), Lucknow, in partnership with Sunstone, graduating in 2026. His coursework focuses on Data Structures, Database Systems, and Object-Oriented Software Engineering.";
+        "Praveen is pursuing his B.Tech in Computer Science and Engineering from Shri Ramswaroop Memorial University (SRMU), Lucknow, in partnership with Sunstone, graduating in 2028. His coursework focuses on Data Structures, Database Systems, and Object-Oriented Software Engineering.";
     } else if (
       prompt.includes('leetcode') ||
       prompt.includes('coding') ||

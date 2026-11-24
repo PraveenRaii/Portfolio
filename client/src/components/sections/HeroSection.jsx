@@ -116,7 +116,7 @@ const HeroSection = ({ profile }) => {
                 <div className="text-xs font-mono text-theme-textMuted flex items-center gap-2">
                   <span>{profile?.roleTitle || 'Full Stack Developer'}</span>
                   <span>&bull;</span>
-                  <span className="text-indigo-500 font-medium">B.Tech CSE '26</span>
+                  <span className="text-indigo-500 font-medium">B.Tech CSE '28</span>
                 </div>
               </div>
             </div>

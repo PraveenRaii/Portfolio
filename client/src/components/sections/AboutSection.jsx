@@ -105,7 +105,7 @@ const AboutSection = ({ profile }) => {
                         </p>
                       </div>
                       <span className="shrink-0 px-2 py-1 rounded bg-indigo-500/30 border border-indigo-400/40 text-[10px] font-mono font-bold text-indigo-300">
-                        B.Tech '26
+                        B.Tech '28
                       </span>
                     </div>
                   </div>
@@ -189,7 +189,7 @@ const AboutSection = ({ profile }) => {
                   Academic Focus &bull; SRMU Lucknow
                 </h4>
                 <p className="text-xs text-theme-textMuted mt-0.5">
-                  Bachelor of Technology (B.Tech) in Computer Science &amp; Engineering (3rd Year, 2022–2026).
+                  Bachelor of Technology (B.Tech) in Computer Science &amp; Engineering (2024–2028).
                 </p>
               </div>
             </div>
